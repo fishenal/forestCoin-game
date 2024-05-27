@@ -12,6 +12,7 @@ import IndicatorCover from './IndicatorCover';
 import { scoreSingleton } from '../store/score';
 
 class GameScreen extends Container {
+    public static SCREEN_ID = 'gameScreen';
     private popupIsShow: boolean;
     private bird: Bird;
     constructor() {

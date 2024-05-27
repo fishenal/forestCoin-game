@@ -4,6 +4,7 @@ import { emitter } from '../store/emitter';
 const learnedLskey = 'learnedIndicator';
 
 class IndicatorCover extends Container {
+    public static SCREEN_ID = 'indicatorCover';
     private indicator: Sprite;
     private info: Text;
     private cover: Graphics;
@@ -50,6 +51,7 @@ class IndicatorCover extends Container {
         });
     }
     public show() {
+        this.visible = true;
         const learned = window.localStorage.getItem(learnedLskey);
         if (!learned) {
             this.visible = true;

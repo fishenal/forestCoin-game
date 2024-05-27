@@ -1,8 +1,11 @@
 import { Application } from 'pixi.js';
+import GameScreen from './screen/GameScreen';
+import LoadScreen from './screen/LoadScreen';
+// import { emitter } from './store/emitter';
+import { navigation } from './navigation';
+import { designConfig } from './utils/designConfig';
 import { initAssets } from './utils/assets';
-import GameScreen from './screens/GameScreen';
-import LoadScreen from './screens/LoadScreen';
-import { emitter } from './store/emitter';
+import StartScreen from './screen/StartScreen';
 
 declare global {
     interface Window {
@@ -18,8 +21,8 @@ export const app = new Application();
 function resize() {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-    const minWidth = 920;
-    const minHeight = 480;
+    const minWidth = designConfig.content.width;
+    const minHeight = designConfig.content.height;
 
     // Calculate renderer and canvas sizes based on current dimensions
     const scaleX = windowWidth < minWidth ? minWidth / windowWidth : 1;
@@ -35,8 +38,8 @@ function resize() {
 
     // Update renderer  and navigation screens dimensions
     app.renderer.resize(width, height);
-
-    emitter.emit('onResize', { width: width, height: height });
+    navigation.init();
+    navigation.resize(width, height);
 }
 
 /** Setup app and initialise assets */
@@ -49,24 +52,24 @@ async function init() {
     });
     await window.CrazyGames.SDK.init();
     window.addEventListener('resize', resize);
-
+    resize();
     // Add pixi canvas element (app.canvas) to the document's body
     document.body.appendChild(app.canvas);
 
-    const loadScreen = new LoadScreen();
-    app.stage.addChild(loadScreen);
+    // const loadScreen = new LoadScreen();
+    // app.stage.addChild(loadScreen);
+    navigation.setLoadScreen(LoadScreen);
     await window.CrazyGames.SDK.game.loadingStart();
     // Setup assets bundles (see assets.ts) and start up loading everything in background
     await initAssets();
 
     await window.CrazyGames.SDK.game.loadingStop();
 
-    app.stage.removeChild(loadScreen);
+    // app.stage.removeChild(loadScreen);
+    navigation.goToScreen(StartScreen);
+    // const gameScreen = new GameScreen();
 
-    const gameScreen = new GameScreen();
-
-    app.stage.addChild(gameScreen);
-    resize();
+    // app.stage.addChild(gameScreen);
 }
 
 // Init everything

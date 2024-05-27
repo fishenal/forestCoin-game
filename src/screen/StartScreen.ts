@@ -1,9 +1,13 @@
-import { Container, Sprite } from 'pixi.js';
+import { Container, Sprite, Ticker } from 'pixi.js';
 import { CommonButton } from '../ui/CommonButton';
-import { emitter } from '../store/emitter';
 import gsap from 'gsap';
 import { sfx } from '../utils/audio';
+import { navigation } from '../navigation';
+import IndicatorCover from './IndicatorCover';
 class StartScreen extends Container {
+    public static SCREEN_ID = 'startScreen';
+    /** An array of bundle IDs for dynamic asset loading. */
+    public static assetBundles = ['preload'];
     private title: Sprite;
     private startButton: CommonButton;
     // private logo: Sprite;
@@ -16,19 +20,6 @@ class StartScreen extends Container {
         this.onStartClick = () => {};
         this.title = Sprite.from('title');
         this.outX = window.innerWidth + 1500;
-        emitter.on('onResize', ({ width, height }) => {
-            this.title.width = width;
-            this.title.height = (width * 371) / 1954;
-            this.title.y = height / 5;
-            this.startButton.width = width / 4;
-            this.startButton.height = this.startButton.width / 3;
-            this.startButton.y = (height * 2) / 3;
-            this.logoContainer.x = width * 0.85;
-            this.logoContainer.y = height * 0.9;
-            if (this.visible) {
-                this.show();
-            }
-        });
         this.title.x = this.outX;
 
         this.addChild(this.title);
@@ -65,29 +56,39 @@ class StartScreen extends Container {
 
         this.addChild(this.logoContainer);
     }
-    public show() {
+
+    /**
+     * Called every frame.
+     * @param time - Ticker object with time related data.
+     */
+    public update(time: Ticker) {
+        // console.log('on ticker', time);
+    }
+
+    public async show() {
         this.visible = true;
         this.startButton.visible = true;
-        gsap.to(this.title, {
+        await gsap.to(this.title, {
             x: 0,
             duration: 0.6,
             ease: 'back.out',
         });
-        gsap.to(this.startButton, {
+        await gsap.to(this.startButton, {
             x: window.innerWidth / 2 + this.startButton.width / 2,
             duration: 0.8,
             ease: 'power2.out',
         });
         this.logoContainer.visible = true;
+        navigation.showOverlay(IndicatorCover, {});
     }
-    public hide() {
+    public async hide() {
         this.visible = false;
-        gsap.to(this.title, {
+        await gsap.to(this.title, {
             x: this.outX * -1,
             duration: 0.6,
             ease: 'back.in',
         });
-        gsap.to(this.startButton, {
+        await gsap.to(this.startButton, {
             x: this.outX * -1,
             duration: 0.8,
             ease: 'power2.out',
@@ -97,6 +98,19 @@ class StartScreen extends Container {
         });
 
         this.logoContainer.visible = false;
+    }
+    public resize(w: number, h: number) {
+        this.title.width = w;
+        this.title.height = (w * 371) / 1954;
+        this.title.y = h / 5;
+        this.startButton.width = w / 4;
+        this.startButton.height = this.startButton.width / 3;
+        this.startButton.y = (h * 2) / 3;
+        this.logoContainer.x = w * 0.85;
+        this.logoContainer.y = h * 0.9;
+        if (this.visible) {
+            this.show();
+        }
     }
 }
 export default StartScreen;

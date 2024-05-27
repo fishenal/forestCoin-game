@@ -2,6 +2,7 @@ import { ProgressBar } from '@pixi/ui';
 import { Container, Graphics } from 'pixi.js';
 import { emitter } from '../store/emitter';
 class LoadScreen extends Container {
+    public static SCREEN_ID = 'loadScreen';
     private progressBar: ProgressBar;
     constructor() {
         super();
