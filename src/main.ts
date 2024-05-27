@@ -5,7 +5,7 @@ import LoadScreen from './screen/LoadScreen';
 import { navigation } from './navigation';
 import { designConfig } from './utils/designConfig';
 import { initAssets } from './utils/assets';
-import StartScreen from './screen/StartScreen';
+// import StartScreen from './screen/StartScreen';
 
 declare global {
     interface Window {
@@ -16,7 +16,7 @@ declare global {
 /** The PixiJS app Application instance, shared across the project */
 export const app = new Application();
 
-// globalThis.__PIXI_APP__ = app;
+globalThis.__PIXI_APP__ = app;
 /** Set up a resize function for the app */
 function resize() {
     const windowWidth = window.innerWidth;
@@ -66,7 +66,7 @@ async function init() {
     await window.CrazyGames.SDK.game.loadingStop();
 
     // app.stage.removeChild(loadScreen);
-    navigation.goToScreen(StartScreen);
+    navigation.goToScreen(GameScreen);
     // const gameScreen = new GameScreen();
 
     // app.stage.addChild(gameScreen);

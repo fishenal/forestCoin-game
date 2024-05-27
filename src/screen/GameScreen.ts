@@ -1,87 +1,38 @@
 import { Container } from 'pixi.js';
-import { emitter } from '../store/emitter';
-import Bird from '../components/Bird';
-import { FinishPopup } from '../components/FinishPopup';
-import { Background, Cloud, Ground } from '../components/Background';
-import StartScreen from './StartScreen';
-import GameContainer from './GameContainer';
-import { getBirdConfig } from '../utils/config';
-import { bgm, sfx } from '../utils/audio';
-import { VolControl } from '../components/VolControl';
-import IndicatorCover from './IndicatorCover';
-import { scoreSingleton } from '../store/score';
-
+import { Workline } from '../game/Workline';
+import { GameBoard } from '../game/GameBoard';
 class GameScreen extends Container {
     public static SCREEN_ID = 'gameScreen';
-    private popupIsShow: boolean;
-    private bird: Bird;
+    public static assetBundles = ['imgAssets'];
+    private gameBoard: GameBoard;
+    private workLine: Workline;
     constructor() {
         super();
-        this.popupIsShow = false;
-        bgm.play('audio/piggybgm.mp3', { volume: 0.6 });
-        emitter.on('finishPopupIsShow', (status) => {
-            this.popupIsShow = status;
-        });
-        emitter.on('onResize', () => {
-            if (this.bird.status === 'start') {
-                this.bird.toStartPosition(() => {});
-            } else {
-                this.bird.toGamePosition(() => {});
-            }
-        });
-        scoreSingleton.init();
-        this.bird = new Bird();
-
-        const background = new Background();
-        const ground = new Ground();
-        const cloud = new Cloud();
-        const finishPopup = new FinishPopup();
-        this.addChild(background);
-        this.addChild(cloud);
-        this.addChild(ground);
-        const gameContainer = new GameContainer(this.bird);
-        gameContainer.eventMode = 'none';
-        gameContainer.on('pointerdown', () => {
-            if (this.popupIsShow) {
-                return;
-            }
-            sfx.play('audio/swing.wav');
-            emitter.emit('isPausedChange', false);
-            this.bird.verSpeed = getBirdConfig().intSpeed;
-        });
-        this.addChild(gameContainer);
-        const indicator = new IndicatorCover();
-        const startScreen = new StartScreen();
-        startScreen.show();
-        startScreen.onStartClick = () => {
-            window.CrazyGames.SDK.game.gameplayStart();
-            this.bird.toGamePosition(() => {
-                gameContainer.piles.show();
-                indicator.show();
-            });
-            startScreen.hide();
+        this.gameBoard = new GameBoard();
+        this.gameBoard.onHeadClick = (hid: number) => {
+            this.handleHeadClick(hid);
         };
-        this.addChild(startScreen);
+        this.addChild(this.gameBoard);
+        this.workLine = new Workline();
+        this.addChild(this.workLine);
+    }
+    public async show() {
+        this.gameBoard.show();
+        this.workLine.show();
+    }
 
-        this.addChild(this.bird);
-        this.addChild(finishPopup);
+    private handleHeadClick(hid: number) {
+        // console.log('🚀 ~ GameScreen ~ handleHeadClick ~ cidx:', cidx);
+        this.workLine.addHid(hid);
+        // this.game.pushToWorkline(hid);
+        // this.game.gameBoard[ridx];
+        // this.showWorkline();
+    }
 
-        const volButton = new VolControl();
-        this.addChild(volButton);
-
-        this.addChild(indicator);
-
-        emitter.on('onReset', () => {
-            emitter.emit('isPausedChange', true);
-            this.bird.toGamePosition(() => {});
-        });
-
-        emitter.on('onBack', () => {
-            window.CrazyGames.SDK.game.gameplayStop();
-            this.bird.toStartPosition(() => {
-                startScreen.show();
-            });
-        });
+    update() {
+        // console.log('🚀 ~ GameScreen ~ update ~ this.game.worklineContainer:', this.game.worklineContainer);
+        // this.addChild(this.game.worklineContainer);
+        // this.game.worklineContainer.show();
     }
 }
 
