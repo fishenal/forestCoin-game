@@ -1,16 +1,19 @@
 import { Container, Rectangle } from 'pixi.js';
 import { randomShuffle } from '../utils/random';
-import { Head } from './Head';
+import { Head } from '../components/Head';
+import { workLine } from './Workline';
+import { gold } from './Gold';
 
 export class GameBoard extends Container {
     private row: number = 9;
     private col: number = 9;
     public gameNumberBoard: number[][] = [];
     public gameBoard: Head[][] = [];
-    public onHeadClick: (hid: number) => void = () => {};
+    // public onHeadClick: (hid: number) => void = () => {};
+    // public onClearCol: () => void = () => {};
     constructor() {
         super();
-        this.y = 200;
+        this.y = 10;
         this.init();
     }
 
@@ -25,16 +28,17 @@ export class GameBoard extends Container {
         }
     }
     public show() {
-        this.hitArea = new Rectangle(0, 0, 550, 80);
+        this.hitArea = new Rectangle(0, 8 * 60, 9 * 60, 60);
+
         this.gameNumberBoard.forEach((col, cid) => {
             const colArr: Head[] = [];
 
             col.forEach((hid: number, rid: number) => {
                 const head = new Head({ hid, cidx: cid });
                 head.x = cid * 60;
-                head.y = rid * 90;
+                head.y = rid * 60;
                 head.on('pointerdown', () => {
-                    this.handleFirstHeadClick(head, cid);
+                    this.handleFirstHeadClick(head, cid, rid);
                 });
 
                 colArr.push(head);
@@ -45,15 +49,22 @@ export class GameBoard extends Container {
             this.gameBoard.push(colArr);
         });
     }
-    private handleFirstHeadClick(head: Head, colIdx: number) {
-        this.onHeadClick(head.hid);
+    private handleFirstHeadClick(head: Head, colIdx: number, rowIdx: number) {
+        // console.log('🚀 ~ GameBoard ~ handleFirstHeadClick ~ rowIdx:', rowIdx);
+        if (rowIdx === 0) {
+            gold.addCoin(5);
+        }
+        // this.onHeadClick(head.hid);
+        workLine.addHid(head.hid);
+        gold.addCoin(1);
         head.visible = false;
 
         const currentCol = this.gameBoard[colIdx];
 
         currentCol.forEach((head) => {
-            head.y -= 90;
+            head.y += 60;
         });
         console.log('🚀 ~ GameBoard ~ handleFirstHeadClick ~ currentCol:', currentCol);
     }
 }
+export const gameBoard = new GameBoard();

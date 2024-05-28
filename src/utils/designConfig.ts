@@ -1,13 +1,20 @@
 /** Minimum screen width before the resizing function shrinks the view. */
-const minWidth = 428;
+const minWidth = 1000;
 /** Minimum screen height before the resizing function shrinks the view. */
-const minHeight = 925;
+const minHeight = 800;
 
 /** Object to store all configuration values for the out of gameplay design logic. */
 export const designConfig = {
     content: {
         width: minWidth,
         height: minHeight,
+    },
+    head: {
+        size: 50,
+    },
+    grid: {
+        x: 60,
+        y: 60,
     },
     /** Enable to be able to see the collision bodies of the bubbles. */
     debugBody: false,

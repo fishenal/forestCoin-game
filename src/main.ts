@@ -50,7 +50,7 @@ async function init() {
         backgroundColor: 0xffffff,
         autoDensity: true,
     });
-    await window.CrazyGames.SDK.init();
+    // await window.CrazyGames.SDK.init();
     window.addEventListener('resize', resize);
     resize();
     // Add pixi canvas element (app.canvas) to the document's body
@@ -58,12 +58,12 @@ async function init() {
 
     // const loadScreen = new LoadScreen();
     // app.stage.addChild(loadScreen);
-    navigation.setLoadScreen(LoadScreen);
-    await window.CrazyGames.SDK.game.loadingStart();
+    // navigation.setLoadScreen(LoadScreen);
+    // await window.CrazyGames.SDK.game.loadingStart();
     // Setup assets bundles (see assets.ts) and start up loading everything in background
     await initAssets();
 
-    await window.CrazyGames.SDK.game.loadingStop();
+    // await window.CrazyGames.SDK.game.loadingStop();
 
     // app.stage.removeChild(loadScreen);
     navigation.goToScreen(GameScreen);
