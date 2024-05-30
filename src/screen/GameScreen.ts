@@ -1,15 +1,11 @@
 import { Container } from 'pixi.js';
-import { Workline, workLine } from '../game/Workline';
-import { GameBoard, gameBoard } from '../game/GameBoard';
-import { Gold, gold } from '../game/Gold';
+import { workLine } from '../game/Workline';
+import { gameBoard } from '../game/GameBoard';
+import { gold } from '../game/Gold';
 import { tool } from '../game/Tool';
 class GameScreen extends Container {
     public static SCREEN_ID = 'gameScreen';
     public static assetBundles = ['imgAssets'];
-    private gameBoard: GameBoard;
-    private workLine: Workline;
-    private gold: Gold;
-    private tool: Tool;
     constructor() {
         super();
         // this.gold = gold;
