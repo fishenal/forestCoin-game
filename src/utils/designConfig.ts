@@ -3,11 +3,23 @@ const minWidth = 1000;
 /** Minimum screen height before the resizing function shrinks the view. */
 const minHeight = 800;
 
+const innerWidth = 800;
 /** Object to store all configuration values for the out of gameplay design logic. */
 export const designConfig = {
     content: {
         width: minWidth,
         height: minHeight,
+        innerWidth,
+    },
+    sixContent: {
+        width: 575,
+        gap: 5,
+        coinWidth: 90,
+    },
+    nineContent: {
+        width: 590,
+        gap: 5,
+        coinWidth: 60,
     },
     head: {
         size: 50,

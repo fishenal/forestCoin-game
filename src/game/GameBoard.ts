@@ -1,27 +1,41 @@
-import { Container, Graphics, Rectangle } from 'pixi.js';
+import { Container, Graphics, Rectangle, Sprite } from 'pixi.js';
 import { randomShuffle } from '../utils/random';
 import { Head } from '../components/Head';
 import { workLine } from './Workline';
 import { gold } from './Gold';
 import gsap from 'gsap';
+import { designConfig } from '../utils/designConfig';
 
+const innerWidth = designConfig.sixContent.width;
+const coinWidth = designConfig.sixContent.coinWidth;
+const gap = designConfig.sixContent.gap;
 export class GameBoard extends Container {
-    private row: number = 9;
-    private col: number = 9;
+    public row: number = 6;
+    public col: number = 6;
     public gameNumberBoard: number[][] = [];
     public gameBoard: Head[][] = [];
-    private hitLine: number;
+    private vineContainer: Container;
+    private hitLine: number; // 3 or 1
     private hitAreaSign: Graphics;
     private background: Graphics;
     // public onHeadClick: (hid: number) => void = () => {};
     // public onClearCol: () => void = () => {};
     constructor() {
         super();
+        this.x = 0;
         this.y = 10;
-        this.hitLine = this.row - 1;
+        this.hitLine = 3;
+        this.width = innerWidth;
+        this.height = this.row * coinWidth + (this.row + 1) * gap;
         this.hitAreaSign = new Graphics();
         this.background = new Graphics();
         this.sortableChildren = true;
+        this.vineContainer = new Container();
+        this.vineContainer.x = 0;
+        this.vineContainer.y = 0;
+        this.vineContainer.zIndex = 5;
+        // this.vineContainer.x = -9999;
+        this.addChild(this.vineContainer);
         this.eventMode = 'static';
         this.init();
     }
@@ -42,16 +56,12 @@ export class GameBoard extends Container {
 
             col.forEach((hid: number, rid: number) => {
                 const head = new Head({ hid, cidx: cid });
-                head.x = cid * 60;
-                head.y = rid * 60;
+                head.x = cid * coinWidth + gap * (cid + 1);
+                head.y = rid * coinWidth + gap * (rid + 1);
                 head.on('pointerdown', () => {
                     this.handleHeadClick(head, cid, rid);
                 });
-                if (rid === this.hitLine) {
-                    head.zIndex = 4;
-                } else {
-                    head.zIndex = 0;
-                }
+                head.zIndex = 4;
 
                 colArr.push(head);
                 this.addChild(head);
@@ -60,28 +70,52 @@ export class GameBoard extends Container {
         });
         this.renderBackground();
         this.renderHitArea();
+        this.renderVine();
     }
     renderBackground() {
-        this.background.roundRect(-5, -5, this.row * 60, this.col * 60);
-        this.background.fill(0x000000);
-        this.background.alpha = 0.5;
+        this.background.roundRect(0, 0, innerWidth, this.col * coinWidth);
+        this.background.fill(0xd6ad98);
+        this.background.stroke({
+            width: 2,
+            color: 0x301f23,
+        });
+        this.background.width = innerWidth;
+        this.background.height = this.col * coinWidth + (this.col + 1) * gap;
+        // this.background.alpha = 0.5;
         this.background.zIndex = 1;
         this.addChild(this.background);
     }
-    renderHitArea() {
-        const hitX = -5;
-        const hitY = this.hitLine * 60 - 5;
-        const hitW = this.col * 60;
-        const hitH = 60;
-
-        this.hitAreaSign.roundRect(hitX, hitY, hitW, hitH);
-        this.hitAreaSign.fill(0xffffff);
-        this.hitAreaSign.stroke({
-            width: 2,
-            color: 0x000000,
+    renderVine() {
+        this.gameNumberBoard[0].forEach((_, rid) => {
+            if (this.gameNumberBoard.length - rid > this.hitLine) {
+                // render vine forbid
+                const vine = Sprite.from('vine');
+                // vine.x = -1 * innerWidth;
+                vine.width = innerWidth;
+                vine.height = coinWidth + gap;
+                vine.y = rid * coinWidth + gap * (rid + 1);
+                this.vineContainer.addChild(vine);
+                // TODO, vine ani
+                // gsap.to(vine, {
+                //     x: 0,
+                // });
+            }
         });
-        this.hitAreaSign.zIndex = 3;
-        this.addChild(this.hitAreaSign);
+    }
+    renderHitArea() {
+        const hitX = 0;
+        const hitY = (this.gameNumberBoard.length - this.hitLine) * (coinWidth + gap);
+        const hitW = innerWidth;
+        const hitH = (coinWidth + gap) * this.hitLine;
+
+        // this.hitAreaSign.roundRect(hitX, hitY, hitW, hitH);
+        // this.hitAreaSign.fill(0xffffff);
+        // this.hitAreaSign.stroke({
+        //     width: 2,
+        //     color: 0x000000,
+        // });
+        // this.hitAreaSign.zIndex = 3;
+        // this.addChild(this.hitAreaSign);
         this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
     }
     private handleHeadClick(head: Head, colIdx: number, rowIdx: number) {
@@ -101,7 +135,7 @@ export class GameBoard extends Container {
             }
             if (idx < rowIdx) {
                 gsap.to(head, {
-                    y: head.y + 60,
+                    y: head.y + coinWidth + gap,
                 });
             }
         });

@@ -3,41 +3,60 @@ import { Head } from '../components/Head';
 import { gold } from './Gold';
 import gsap from 'gsap';
 import { gameBoard } from './GameBoard';
+import { designConfig } from '../utils/designConfig';
+import { PlaceHolder } from '../components/PlaceHolder';
 
+const innerWidth = designConfig.sixContent.width;
+const coinWidth = designConfig.sixContent.coinWidth;
+const gap = designConfig.sixContent.gap;
 export class Workline extends Container {
     private hidArr: number[] = [];
+    private limitNum: number;
+    private size: number;
     private headContainer: Container<Head>;
+    private placeholderContainer: Container<PlaceHolder>;
     private plate: Graphics;
     public onThreeRemove: () => void = () => {};
     constructor() {
         super();
-        const width = 60 * 7;
-        const height = 60;
-        this.width = width;
-        this.height = height;
-        this.y = 60 * 9 + 20;
+        this.limitNum = 7; //7 or 5
+        this.size = (innerWidth - gap * (this.limitNum + 1)) / this.limitNum;
+        // const width = 60 * 7;
+        // const height = 60;
+        this.width = innerWidth;
+        this.height = coinWidth + gap * 2;
+        this.y = gameBoard.row * coinWidth + (gameBoard.row + 1) * gap + 20;
         this.x = 0;
-        this.headContainer = new Container<Head>();
-        this.headContainer.x = 5;
-        this.headContainer.y = 5;
+        this.headContainer = new Container();
+        this.headContainer.x = 0;
+        this.headContainer.y = 0;
+        this.headContainer.zIndex = 5;
+        this.placeholderContainer = new Container();
+        this.placeholderContainer.x = 0;
+        this.placeholderContainer.y = 0;
         this.plate = new Graphics();
-        this.plate.roundRect(-5, 0, width + 5, height);
-        this.plate.fill(0x000);
+
         // this.plate.alpha = 0.5;
 
         this.addChild(this.plate);
         this.addChild(this.headContainer);
+        this.addChild(this.placeholderContainer);
     }
     public show() {
-        this.headContainer.removeChildren();
-        this.hidArr.map((hid, idx) => {
-            const head = new Head({ hid });
-            head.x = 60 * idx;
-            this.headContainer.addChild(head);
+        // this.headContainer.removeChildren();
+        // this.hidArr.map((hid, idx) => {
+        //     const head = new Head({ hid });
+        //     head.x = coinWidth * idx;
+        //     this.headContainer.addChild(head);
+        // });
+
+        this.plate.roundRect(0, 0, innerWidth, coinWidth + gap * 2);
+        this.plate.fill(0x69a5c9);
+        this.plate.stroke({
+            width: 2,
+            color: 0x301f23,
         });
-        if (this.hidArr.length >= 7) {
-            window.alert('loss');
-        }
+        this.renderPlaceholder();
         // const lText = new Text({
         //     text: String(this.hidArr.length),
         //     style: {
@@ -50,9 +69,20 @@ export class Workline extends Container {
 
         // this.headContainer.addChild(lText);
     }
+    renderPlaceholder() {
+        for (let i = 0; i < this.limitNum; i++) {
+            const placeholder = new PlaceHolder({ number: i + 1 });
+
+            placeholder.x = this.size * i + gap * (i + 1);
+            placeholder.y = gap * 2;
+            placeholder.width = this.size;
+            placeholder.height = this.size;
+            this.placeholderContainer.addChild(placeholder);
+        }
+    }
     public addHid(hid: number) {
         gameBoard.eventMode = 'none';
-        const head = new Head({ hid });
+
         let count = 0;
         let lastMatchIdx = 0;
 
@@ -70,7 +100,7 @@ export class Workline extends Container {
                 this.headContainer.children.forEach((item, idx) => {
                     if (idx > lastMatchIdx) {
                         gsap.to(item, {
-                            x: item.x + 60,
+                            x: item.x + coinWidth,
                         });
                     }
                 });
@@ -81,7 +111,10 @@ export class Workline extends Container {
             lastMatchIdx = this.headContainer.children.length;
         }
 
-        head.x = lastMatchIdx * 60;
+        const head = new Head({ hid });
+        head.x = this.size * lastMatchIdx + gap * (lastMatchIdx + 1);
+        head.width = this.size;
+        head.height = this.size;
         this.headContainer.addChildAt(head, lastMatchIdx);
         gsap.fromTo(
             head,
@@ -89,7 +122,7 @@ export class Workline extends Container {
                 y: 999,
             },
             {
-                y: 0,
+                y: gap * 2,
                 onComplete: () => {
                     if (count === 2) {
                         this.removeThree(hid, lastMatchIdx);
@@ -119,9 +152,8 @@ export class Workline extends Container {
                 });
             }
             if (idx > lastMatchIdx) {
-                console.log('🚀 ~ Workline ~ this.headContainer.children.forEach ~ item:', item.x);
                 tl.to(item, {
-                    x: item.x - 60 * 3,
+                    x: item.x - (this.size * 3 + gap * 3),
                 });
             }
         });
