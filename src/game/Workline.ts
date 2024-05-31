@@ -2,6 +2,7 @@ import { Container, Graphics } from 'pixi.js';
 import { Head } from '../components/Head';
 import { gold } from './Gold';
 import gsap from 'gsap';
+import { gameBoard } from './GameBoard';
 
 export class Workline extends Container {
     private hidArr: number[] = [];
@@ -50,6 +51,7 @@ export class Workline extends Container {
         // this.headContainer.addChild(lText);
     }
     public addHid(hid: number) {
+        gameBoard.eventMode = 'none';
         const head = new Head({ hid });
         let count = 0;
         let lastMatchIdx = 0;
@@ -91,6 +93,8 @@ export class Workline extends Container {
                 onComplete: () => {
                     if (count === 2) {
                         this.removeThree(hid, lastMatchIdx);
+                    } else {
+                        gameBoard.eventMode = 'static';
                     }
                 },
             },
@@ -101,8 +105,13 @@ export class Workline extends Container {
     }
     private removeThree(hid: number, lastMatchIdx: number) {
         this.headContainer.children.forEach((item, idx) => {
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    gameBoard.eventMode = 'static';
+                },
+            });
             if (item.hid === hid) {
-                gsap.to(item, {
+                tl.to(item, {
                     x: item.x + 2009,
                     onComplete: () => {
                         this.headContainer.removeChild(item);
@@ -111,7 +120,7 @@ export class Workline extends Container {
             }
             if (idx > lastMatchIdx) {
                 console.log('🚀 ~ Workline ~ this.headContainer.children.forEach ~ item:', item.x);
-                gsap.to(item, {
+                tl.to(item, {
                     x: item.x - 60 * 3,
                 });
             }

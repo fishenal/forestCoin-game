@@ -22,6 +22,7 @@ export class GameBoard extends Container {
         this.hitAreaSign = new Graphics();
         this.background = new Graphics();
         this.sortableChildren = true;
+        this.eventMode = 'static';
         this.init();
     }
 
