@@ -1,46 +1,34 @@
 import { Container, Sprite, Ticker } from 'pixi.js';
-import { CommonButton } from '../ui/CommonButton';
 import gsap from 'gsap';
 import { sfx } from '../utils/audio';
 import { navigation } from '../navigation';
 import IndicatorCover from './IndicatorCover';
+import { background } from '../components/Background';
+import { title } from '../components/Title';
+import { designConfig } from '../utils/designConfig';
+import { levelBoard } from '../components/LevelBoard';
+
+const innerWidth = designConfig.sixContent.width;
 class StartScreen extends Container {
     public static SCREEN_ID = 'startScreen';
     /** An array of bundle IDs for dynamic asset loading. */
-    public static assetBundles = ['preload'];
-    private title: Sprite;
-    private startButton: CommonButton;
-    // private logo: Sprite;
-    // private cLogo: Sprite;
+    public static assetBundles = ['imgAssets'];
     private logoContainer: Container;
-    private outX: number;
-    public onStartClick: () => void;
+    private innerContainer: Container;
     constructor() {
         super();
-        this.onStartClick = () => {};
-        this.title = Sprite.from('title');
-        this.outX = window.innerWidth + 1500;
-        this.title.x = this.outX;
+        this.addChild(background);
+        this.innerContainer = new Container();
+        this.innerContainer.x = 100;
+        this.innerContainer.y = 0;
+        this.innerContainer.width = innerWidth;
+        console.log('🚀 ~ StartScreen ~ constructor ~ innerWidth:', innerWidth);
 
-        this.addChild(this.title);
-
-        this.startButton = new CommonButton({
-            text: 'Start',
-            radius: 15,
-            onPress: () => {
-                sfx.play('audio/click.wav');
-                this.hide();
-                this.onStartClick();
-            },
-        });
-        this.startButton.pivot.x = this.startButton.width / 2;
-        this.startButton.x = this.outX;
-
-        this.addChild(this.startButton);
-
+        this.innerContainer.addChild(title);
+        this.innerContainer.addChild(levelBoard);
         this.logoContainer = new Container();
-        this.logoContainer.x = window.innerWidth * 0.85;
-        this.logoContainer.y = window.innerHeight * 1.1;
+        // this.logoContainer.x = window.innerWidth * 0.85;
+        // this.logoContainer.y = window.innerHeight * 1.1;
         const logo = Sprite.from('fishenalLogo');
         logo.width = 147;
         logo.height = 107;
@@ -54,7 +42,8 @@ class StartScreen extends Container {
         cLogo.x = -170;
         this.logoContainer.addChild(cLogo);
 
-        this.addChild(this.logoContainer);
+        this.innerContainer.addChild(this.logoContainer);
+        this.addChild(this.innerContainer);
     }
 
     /**
@@ -67,50 +56,21 @@ class StartScreen extends Container {
 
     public async show() {
         this.visible = true;
-        this.startButton.visible = true;
-        await gsap.to(this.title, {
-            x: 0,
-            duration: 0.6,
-            ease: 'back.out',
-        });
-        await gsap.to(this.startButton, {
-            x: window.innerWidth / 2 + this.startButton.width / 2,
-            duration: 0.8,
-            ease: 'power2.out',
-        });
-        this.logoContainer.visible = true;
-        navigation.showOverlay(IndicatorCover, {});
+        await title.show();
+        await background.show();
+        await levelBoard.show();
     }
     public async hide() {
         this.visible = false;
-        await gsap.to(this.title, {
-            x: this.outX * -1,
-            duration: 0.6,
-            ease: 'back.in',
-        });
-        await gsap.to(this.startButton, {
-            x: this.outX * -1,
-            duration: 0.8,
-            ease: 'power2.out',
-            onComplete: () => {
-                this.startButton.visible = false;
-            },
-        });
-
-        this.logoContainer.visible = false;
+        // this.logoContainer.visible = false;
     }
     public resize(w: number, h: number) {
-        this.title.width = w;
-        this.title.height = (w * 371) / 1954;
-        this.title.y = h / 5;
-        this.startButton.width = w / 4;
-        this.startButton.height = this.startButton.width / 3;
-        this.startButton.y = (h * 2) / 3;
-        this.logoContainer.x = w * 0.85;
-        this.logoContainer.y = h * 0.9;
-        if (this.visible) {
-            this.show();
-        }
+        background.resize(w, h);
+        // this.innerContainer.x = 15;
+        this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
+        this.innerContainer.y = 60;
+        this.logoContainer.y = h * 0.8;
+        this.logoContainer.x = innerWidth * 0.8;
     }
 }
 export default StartScreen;

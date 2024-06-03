@@ -39,10 +39,10 @@ class GameScreen extends Container {
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
     }
     public async show() {
-        gameBoard.show();
-        workLine.show();
+        await gameBoard.show();
+        await workLine.show();
         // tool.show();
-        background.show();
+        await background.show();
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
         this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
         this.innerContainer.y = 60;

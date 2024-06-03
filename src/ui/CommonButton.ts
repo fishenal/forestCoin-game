@@ -2,7 +2,6 @@ import { FancyButton } from '@pixi/ui';
 import { Graphics, Sprite, Text } from 'pixi.js';
 const args = {
     color: '#fd6f90',
-
     hoverColor: '#FEC230',
     pressedColor: '0x84d0ff',
     disabledColor: '#6E6E6E',

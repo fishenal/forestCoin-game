@@ -5,6 +5,7 @@ import LoadScreen from './screen/LoadScreen';
 import { navigation } from './navigation';
 import { designConfig } from './utils/designConfig';
 import { initAssets } from './utils/assets';
+import StartScreen from './screen/StartScreen';
 // import StartScreen from './screen/StartScreen';
 
 declare global {
@@ -66,7 +67,8 @@ async function init() {
     // await window.CrazyGames.SDK.game.loadingStop();
 
     // app.stage.removeChild(loadScreen);
-    navigation.goToScreen(GameScreen);
+    //navigation.goToScreen(GameScreen);
+    navigation.goToScreen(StartScreen);
     // const gameScreen = new GameScreen();
 
     // app.stage.addChild(gameScreen);
