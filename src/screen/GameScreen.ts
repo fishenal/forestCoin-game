@@ -1,10 +1,9 @@
 import { Container } from 'pixi.js';
 import { workLine } from '../game/Workline';
 import { gameBoard } from '../game/GameBoard';
-import { gold } from '../game/Gold';
-import { tool } from '../game/Tool';
 import { background } from '../components/Background';
 import { designConfig } from '../utils/designConfig';
+import { countdownline } from '../game/Countdownline';
 
 const innerWidth = designConfig.sixContent.width;
 class GameScreen extends Container {
@@ -32,6 +31,7 @@ class GameScreen extends Container {
         //     this.gold.addCoin(3);
         // };
         this.innerContainer.addChild(workLine);
+        this.innerContainer.addChild(countdownline);
         // this.innerContainer.addChild(tool);
         this.addChild(background);
         this.addChild(this.innerContainer);
@@ -43,9 +43,10 @@ class GameScreen extends Container {
         await workLine.show();
         // tool.show();
         await background.show();
+        await countdownline.show();
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
         this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
-        this.innerContainer.y = 60;
+        this.innerContainer.y = 20;
     }
 
     // private handleHeadClick(hid: number) {
@@ -74,13 +75,14 @@ class GameScreen extends Container {
         // this.x = w / 4;
         // this.y = 20;
     }
-    update() {
-        //this.width
-        // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
-        // console.log('🚀 ~ GameScreen ~ update ~ this.game.worklineContainer:', this.game.worklineContainer);
-        // this.addChild(this.game.worklineContainer);
-        // this.game.worklineContainer.show();
-    }
+    // update(timer) {
+    // countdownline.update(timer);
+    //this.width
+    // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
+    // console.log('🚀 ~ GameScreen ~ update ~ this.game.worklineContainer:', this.game.worklineContainer);
+    // this.addChild(this.game.worklineContainer);
+    // this.game.worklineContainer.show();
+    // }
 }
 
 export default GameScreen;

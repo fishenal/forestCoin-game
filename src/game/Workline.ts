@@ -41,7 +41,7 @@ export class Workline extends Container {
         // const height = 60;
         this.width = innerWidth;
         this.height = coinWidth + gap * 2;
-        this.y = gameBoard.row * coinWidth + (gameBoard.row + 1) * gap + 20;
+        this.y = gameBoard.row * coinWidth + (gameBoard.row + 1) * gap + 110;
         this.x = 0;
         this.headContainer = new Container();
         this.headContainer.x = 0;

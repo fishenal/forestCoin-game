@@ -23,7 +23,7 @@ export class GameBoard extends Container {
     constructor() {
         super();
         this.x = 0;
-        this.y = 10;
+        this.y = 100;
         this.hitLine = 3;
         this.width = innerWidth;
         this.height = this.row * coinWidth + (this.row + 1) * gap;
