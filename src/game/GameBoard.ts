@@ -123,7 +123,7 @@ export class GameBoard extends Container {
             gold.addCoin(5);
         }
         // this.onHeadClick(head.hid);
-        workLine.addHid(head.hid);
+        workLine.pushHid(head.hid);
         gold.addCoin(1);
         head.visible = false;
 

@@ -2,6 +2,8 @@ import { Container, Graphics, Text } from 'pixi.js';
 import { designConfig } from '../utils/designConfig';
 import { Stars } from './Stars';
 import { FancyButton } from '@pixi/ui';
+import { navigation } from '../navigation';
+import GameScreen from '../screen/GameScreen';
 
 const innerWidth = designConfig.sixContent.width;
 
@@ -85,6 +87,7 @@ export class Level extends Container {
         });
         button.x = this.gap;
         button.y = this.gap;
+        button.onPress.connect(this.handleOnPress);
         this.addChild(button);
         // const width = innerWidth / 3;
         // const gap = 30;
@@ -112,7 +115,9 @@ export class Level extends Container {
         // text.y = width / 2;
         // this.addChild(text);
     }
-    handleOnPress() {}
+    handleOnPress() {
+        navigation.goToScreen(GameScreen);
+    }
 }
 
 export class LevelBoard extends Container {

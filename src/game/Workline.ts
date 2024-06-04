@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { gameBoard } from './GameBoard';
 import { designConfig } from '../utils/designConfig';
 import { PlaceHolder } from '../components/PlaceHolder';
+import { debounce_leading } from '../utils/debounce';
 
 const innerWidth = designConfig.sixContent.width;
 const coinWidth = designConfig.sixContent.coinWidth;
@@ -16,10 +17,25 @@ export class Workline extends Container {
     private headContainer: Container<Head>;
     private placeholderContainer: Container<PlaceHolder>;
     private plate: Graphics;
+    private tl: gsap.core.Timeline;
     public onThreeRemove: () => void = () => {};
+    // public debounceAdd: () => void;
     constructor() {
         super();
         this.limitNum = 7; //7 or 5
+        this.tl = gsap.timeline({
+            onComplete: () => {
+                console.log('on tl complete');
+                const next = this.hidArr.shift();
+
+                if (next) {
+                    this.addHid(next);
+                    console.log('🚀 ~ Workline ~ constructor ~ next:', next);
+                }
+
+                // gameBoard.eventMode = 'static';
+            },
+        });
         this.size = (innerWidth - gap * (this.limitNum + 1)) / this.limitNum;
         // const width = 60 * 7;
         // const height = 60;
@@ -41,6 +57,16 @@ export class Workline extends Container {
         this.addChild(this.plate);
         this.addChild(this.headContainer);
         this.addChild(this.placeholderContainer);
+
+        // this.debounceAdd = debounce_leading(this.addHid, 3000, this);
+        // if (this.hidArr.length === 0) {
+        //     this.addHid(hid);
+        //     this.hidArr.shift();
+        // } else {
+        //     this.hidArr.push(hid);
+        // }
+
+        // console.log('🚀 ~ Workline ~ pushHid ~ this.hidArr:', this.hidArr);
     }
     public show() {
         // this.headContainer.removeChildren();
@@ -80,8 +106,19 @@ export class Workline extends Container {
             this.placeholderContainer.addChild(placeholder);
         }
     }
+    public pushHid(hid: number) {
+        if (this.hidArr.length === 0) {
+            this.addHid(hid);
+            this.hidArr.shift();
+        } else {
+            this.hidArr.push(hid);
+        }
+
+        console.log('🚀 ~ Workline ~ pushHid ~ this.hidArr:', this.hidArr);
+    }
+
     public addHid(hid: number) {
-        gameBoard.eventMode = 'none';
+        // gameBoard.eventMode = 'none';
 
         let count = 0;
         let lastMatchIdx = 0;
@@ -99,8 +136,10 @@ export class Workline extends Container {
             if (lastMatchIdx < this.headContainer.children.length - 1) {
                 this.headContainer.children.forEach((item, idx) => {
                     if (idx > lastMatchIdx) {
-                        gsap.to(item, {
-                            x: item.x + coinWidth,
+                        // 后面的移动开的动画
+                        this.tl.to(item, {
+                            x: this.size * (idx + 1) + gap * (idx + 2),
+                            duration: 0.1,
                         });
                     }
                 });
@@ -116,7 +155,8 @@ export class Workline extends Container {
         head.width = this.size;
         head.height = this.size;
         this.headContainer.addChildAt(head, lastMatchIdx);
-        gsap.fromTo(
+        // 新的从下划上来的动画
+        this.tl.fromTo(
             head,
             {
                 y: 999,
@@ -126,8 +166,6 @@ export class Workline extends Container {
                 onComplete: () => {
                     if (count === 2) {
                         this.removeThree(hid, lastMatchIdx);
-                    } else {
-                        gameBoard.eventMode = 'static';
                     }
                 },
             },
@@ -138,22 +176,24 @@ export class Workline extends Container {
     }
     private removeThree(hid: number, lastMatchIdx: number) {
         this.headContainer.children.forEach((item, idx) => {
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    gameBoard.eventMode = 'static';
-                },
-            });
+            // const tl = gsap.timeline({
+            //     onComplete: () => {
+            //         // gameBoard.eventMode = 'static';
+            //     },
+            // });
             if (item.hid === hid) {
-                tl.to(item, {
+                this.tl.to(item, {
                     x: item.x + 2009,
+                    duration: 0.2,
                     onComplete: () => {
                         this.headContainer.removeChild(item);
                     },
                 });
             }
             if (idx > lastMatchIdx) {
-                tl.to(item, {
+                this.tl.to(item, {
                     x: item.x - (this.size * 3 + gap * 3),
+                    duration: 0.1,
                 });
             }
         });
