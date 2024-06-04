@@ -4,6 +4,7 @@ import { gameBoard } from '../game/GameBoard';
 import { background } from '../components/Background';
 import { designConfig } from '../utils/designConfig';
 import { countdownline } from '../game/Countdownline';
+import { toolbarline } from '../game/Toolbarline';
 
 const innerWidth = designConfig.sixContent.width;
 class GameScreen extends Container {
@@ -32,6 +33,7 @@ class GameScreen extends Container {
         // };
         this.innerContainer.addChild(workLine);
         this.innerContainer.addChild(countdownline);
+        this.innerContainer.addChild(toolbarline);
         // this.innerContainer.addChild(tool);
         this.addChild(background);
         this.addChild(this.innerContainer);
@@ -44,6 +46,7 @@ class GameScreen extends Container {
         // tool.show();
         await background.show();
         await countdownline.show();
+        await toolbarline.show();
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
         this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
         this.innerContainer.y = 20;

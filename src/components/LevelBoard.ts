@@ -4,6 +4,7 @@ import { Stars } from './Stars';
 import { FancyButton } from '@pixi/ui';
 import { navigation } from '../navigation';
 import GameScreen from '../screen/GameScreen';
+import { buttonAnimation } from '../utils/buttonAnimation';
 
 const innerWidth = designConfig.sixContent.width;
 
@@ -68,22 +69,7 @@ export class Level extends Container {
                 y: 0,
             },
 
-            animations: {
-                hover: {
-                    props: {
-                        scale: { x: 1.03, y: 1.03 },
-                        y: -1,
-                    },
-                    duration: 100,
-                },
-                pressed: {
-                    props: {
-                        scale: { x: 0.95, y: 0.95 },
-                        y: 5,
-                    },
-                    duration: 100,
-                },
-            },
+            ...buttonAnimation,
         });
         button.x = this.gap;
         button.y = this.gap;
