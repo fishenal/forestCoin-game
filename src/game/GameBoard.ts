@@ -33,7 +33,7 @@ export class GameBoard extends Container {
         this.vineContainer = new Container();
         this.vineContainer.x = 0;
         this.vineContainer.y = 0;
-        this.vineContainer.zIndex = 5;
+        this.vineContainer.zIndex = 6;
         // this.vineContainer.x = -9999;
         this.addChild(this.vineContainer);
         this.eventMode = 'static';
@@ -90,15 +90,17 @@ export class GameBoard extends Container {
             if (this.gameNumberBoard.length - rid > this.hitLine) {
                 // render vine forbid
                 const vine = Sprite.from('vine');
-                // vine.x = -1 * innerWidth;
+                vine.x = 0;
+                vine.alpha = 0;
                 vine.width = innerWidth;
                 vine.height = coinWidth + gap;
                 vine.y = rid * coinWidth + gap * (rid + 1);
                 this.vineContainer.addChild(vine);
+                this.vineContainer.x = 0;
                 // TODO, vine ani
-                // gsap.to(vine, {
-                //     x: 0,
-                // });
+                gsap.to(vine, {
+                    alpha: 1,
+                });
             }
         });
     }
