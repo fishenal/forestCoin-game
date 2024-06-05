@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { designConfig } from '../utils/designConfig';
 import { navigation } from '../navigation';
 import { WinPopup } from './WinPopup';
+import { bgm, sfx } from '../utils/audio';
 
 const innerWidth = designConfig.sixContent.width;
 const coinWidth = designConfig.sixContent.coinWidth;
@@ -28,7 +29,7 @@ export class GameBoard extends Container {
         this.hitLine = 3;
         this.width = innerWidth;
         this.height = this.row * coinWidth + (this.row + 1) * gap;
-        this.hitAreaSign = new Graphics();
+        // this.hitAreaSign = new Graphics();
         this.background = new Graphics();
         this.sortableChildren = true;
         this.vineContainer = new Container();
@@ -116,6 +117,7 @@ export class GameBoard extends Container {
         this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
     }
     private handleHeadClick(head: Head, colIdx: number, rowIdx: number) {
+        sfx.play('audio/collect.mp3');
         workLine.addHid(head.hid);
         gsap.to(head, {
             alpha: 0,

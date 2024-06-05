@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { gameBoard } from './GameBoard';
 import { designConfig } from '../utils/designConfig';
 import { PlaceHolder } from '../components/PlaceHolder';
+import { sfx } from '../utils/audio';
 
 const innerWidth = designConfig.sixContent.width;
 const coinWidth = designConfig.sixContent.coinWidth;
@@ -98,6 +99,7 @@ export class Workline extends Container {
             duration: 0.4,
             onComplete: () => {
                 if (count === 2) {
+                    sfx.play('audio/remove.mp3');
                     const _children = [...this.headContainer.children];
                     _children.forEach((item, idx) => {
                         if (item.hid === hid) {

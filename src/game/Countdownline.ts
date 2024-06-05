@@ -2,6 +2,7 @@ import { Container, Graphics, Text } from 'pixi.js';
 import { designConfig } from '../utils/designConfig';
 import { navigation } from '../navigation';
 import { FailPopup } from './FailPopup';
+import { sfx } from '../utils/audio';
 
 const innerWidth = designConfig.sixContent.width;
 const height = 90;
@@ -48,6 +49,7 @@ export class Countdownline extends Container {
                 this.onCountend();
             }
             this.countDownStr.text = this.getTimeStr();
+            sfx.play('audio/clock_count.mp3');
         }, 1000);
     }
     private stopCount() {

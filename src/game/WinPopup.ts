@@ -3,6 +3,7 @@ import { Stars } from '../components/Stars';
 import { FancyButton } from '@pixi/ui';
 import { buttonAnimation } from '../utils/buttonAnimation';
 import gsap from 'gsap';
+import { bgm } from '../utils/audio';
 
 interface ButtonItem {
     name: string;
@@ -37,6 +38,7 @@ export class WinPopup extends Container {
         ];
     }
     public async show() {
+        bgm.play('audio/win.wav');
         this.renderBackground();
         this.renderContent();
         this.renderBlackMask();

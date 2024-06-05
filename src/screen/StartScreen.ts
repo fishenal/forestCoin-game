@@ -6,7 +6,7 @@ import IndicatorCover from './IndicatorCover';
 import { background } from '../components/Background';
 import { title } from '../components/Title';
 import { designConfig } from '../utils/designConfig';
-import { levelBoard } from '../components/LevelBoard';
+import { levelBoard } from '../game/LevelBoard';
 
 const innerWidth = designConfig.sixContent.width;
 class StartScreen extends Container {
