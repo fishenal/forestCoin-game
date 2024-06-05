@@ -1,5 +1,5 @@
 import { Application } from 'pixi.js';
-import GameScreen from './screen/GameScreen';
+// fimport GameScreen from './screen/GameScreen';
 import LoadScreen from './screen/LoadScreen';
 // import { emitter } from './store/emitter';
 import { navigation } from './navigation';
@@ -49,7 +49,7 @@ async function init() {
     await app.init({
         resolution: Math.max(window.devicePixelRatio, 2),
         backgroundColor: 0xffffff,
-        autoDensity: true,
+        // autoDensity: true,
     });
     // await window.CrazyGames.SDK.init();
     window.addEventListener('resize', resize);
@@ -59,7 +59,7 @@ async function init() {
 
     // const loadScreen = new LoadScreen();
     // app.stage.addChild(loadScreen);
-    // navigation.setLoadScreen(LoadScreen);
+    navigation.setLoadScreen(LoadScreen);
     // await window.CrazyGames.SDK.game.loadingStart();
     // Setup assets bundles (see assets.ts) and start up loading everything in background
     await initAssets();
@@ -67,10 +67,10 @@ async function init() {
     // await window.CrazyGames.SDK.game.loadingStop();
 
     // app.stage.removeChild(loadScreen);
-    //navigation.goToScreen(GameScreen);
+
     navigation.goToScreen(StartScreen);
     // const gameScreen = new GameScreen();
-
+    // navigation.showOverlay(FailPopup);
     // app.stage.addChild(gameScreen);
 }
 

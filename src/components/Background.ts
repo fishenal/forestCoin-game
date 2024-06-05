@@ -6,16 +6,15 @@ export class Background extends Sprite {
     }
     show() {
         this.texture = Texture.from('bg');
-        this.width = window.innerWidth;
-        this.height = window.innerHeight;
-        // this.scale = Math.min(this.scale.x, this.scale.y);
-        this.x = window.innerWidth * 0.5 - this.width * 0.5;
     }
     resize(w: number, h: number) {
-        console.log(w, h);
         this.width = w;
         this.height = h;
-        this.x = w * 0.5 - this.width * 0.5;
+        this.anchor = 0.5;
+        this.x = w * 0.5;
+        this.y = h * 0.5;
+        this.scale = 1.5;
+        // this.x = w * 0.5 - this.width * 0.5;
     }
 }
 export const background = new Background();

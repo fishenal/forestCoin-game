@@ -1,5 +1,7 @@
 import { Container, Graphics, Text } from 'pixi.js';
 import { designConfig } from '../utils/designConfig';
+import { navigation } from '../navigation';
+import { FailPopup } from './FailPopup';
 
 const innerWidth = designConfig.sixContent.width;
 const height = 90;
@@ -64,6 +66,7 @@ export class Countdownline extends Container {
     }
     private onCountend() {
         console.log('count end');
+        navigation.showOverlay(FailPopup);
     }
 }
 export const countdownline = new Countdownline();

@@ -36,6 +36,7 @@ class GameScreen extends Container {
         this.innerContainer.addChild(toolbarline);
         // this.innerContainer.addChild(tool);
         this.addChild(background);
+        // this.addChild(failPopup);
         this.addChild(this.innerContainer);
 
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
@@ -48,8 +49,8 @@ class GameScreen extends Container {
         await countdownline.show();
         await toolbarline.show();
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
-        this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
-        this.innerContainer.y = 20;
+        // this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
+        // this.innerContainer.y = 20;
     }
 
     // private handleHeadClick(hid: number) {
@@ -62,8 +63,8 @@ class GameScreen extends Container {
     // }
     resize(w: number, h: number) {
         background.resize(w, h);
-        this.innerContainer.x = w * 0.5 - this.innerContainer.width * 0.5;
-        this.innerContainer.y = 60;
+        this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
+        this.innerContainer.y = 20;
         // console.log('🚀 ~ GameScreen ~ resize ~ w:', w);
         // this.width = 400;
         // this.height = h;
