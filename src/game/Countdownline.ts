@@ -5,7 +5,7 @@ import { FailPopup } from './FailPopup';
 
 const innerWidth = designConfig.sixContent.width;
 const height = 90;
-const defaultSec = 100;
+const defaultSec = 200;
 export class Countdownline extends Container {
     private second: number;
     private plate: Graphics;
@@ -48,7 +48,7 @@ export class Countdownline extends Container {
                 this.onCountend();
             }
             this.countDownStr.text = this.getTimeStr();
-        }, 100);
+        }, 1000);
     }
     private stopCount() {
         this.second = defaultSec;

@@ -9,8 +9,8 @@ interface ButtonItem {
     spriteName: string;
     action: () => void;
 }
-export class FailPopup extends Container {
-    public static SCREEN_ID = 'failPopup';
+export class WinPopup extends Container {
+    public static SCREEN_ID = 'winPopup';
     public _width!: number;
     public _height!: number;
     private container: Graphics;
@@ -78,7 +78,7 @@ export class FailPopup extends Container {
         star.y = 40;
         star.x = 20;
         this.content.addChild(star);
-        const icon = Sprite.from('Icon_Ghost');
+        const icon = Sprite.from('Icon_Crown');
         icon.width = 120;
         icon.height = 120;
         icon.y = 130;

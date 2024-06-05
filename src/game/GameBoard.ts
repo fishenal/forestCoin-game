@@ -2,9 +2,10 @@ import { Container, Graphics, Rectangle, Sprite } from 'pixi.js';
 import { randomShuffle } from '../utils/random';
 import { Head } from '../components/Head';
 import { workLine } from './Workline';
-import { gold } from './Gold';
 import gsap from 'gsap';
 import { designConfig } from '../utils/designConfig';
+import { navigation } from '../navigation';
+import { WinPopup } from './WinPopup';
 
 const innerWidth = designConfig.sixContent.width;
 const coinWidth = designConfig.sixContent.coinWidth;
@@ -15,8 +16,8 @@ export class GameBoard extends Container {
     public gameNumberBoard: number[][] = [];
     public gameBoard: Head[][] = [];
     private vineContainer: Container;
+    private coinContainer: Container;
     private hitLine: number; // 3 or 1
-    private hitAreaSign: Graphics;
     private background: Graphics;
     // public onHeadClick: (hid: number) => void = () => {};
     // public onClearCol: () => void = () => {};
@@ -36,7 +37,11 @@ export class GameBoard extends Container {
         this.vineContainer.zIndex = 6;
         // this.vineContainer.x = -9999;
         this.addChild(this.vineContainer);
-        this.eventMode = 'static';
+
+        this.coinContainer = new Container();
+        this.coinContainer.eventMode = 'static';
+        this.coinContainer.zIndex = 2;
+        this.addChild(this.coinContainer);
         this.init();
     }
 
@@ -64,7 +69,7 @@ export class GameBoard extends Container {
                 head.zIndex = 4;
 
                 colArr.push(head);
-                this.addChild(head);
+                this.coinContainer.addChild(head);
             });
             this.gameBoard.push(colArr);
         });
@@ -97,7 +102,6 @@ export class GameBoard extends Container {
                 vine.y = rid * coinWidth + gap * (rid + 1);
                 this.vineContainer.addChild(vine);
                 this.vineContainer.x = 0;
-                // TODO, vine ani
                 gsap.to(vine, {
                     alpha: 1,
                 });
@@ -109,39 +113,35 @@ export class GameBoard extends Container {
         const hitY = (this.gameNumberBoard.length - this.hitLine) * (coinWidth + gap);
         const hitW = innerWidth;
         const hitH = (coinWidth + gap) * this.hitLine;
-
-        // this.hitAreaSign.roundRect(hitX, hitY, hitW, hitH);
-        // this.hitAreaSign.fill(0xffffff);
-        // this.hitAreaSign.stroke({
-        //     width: 2,
-        //     color: 0x000000,
-        // });
-        // this.hitAreaSign.zIndex = 3;
-        // this.addChild(this.hitAreaSign);
         this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
     }
     private handleHeadClick(head: Head, colIdx: number, rowIdx: number) {
-        if (rowIdx === 0) {
-            gold.addCoin(5);
-        }
-        // this.onHeadClick(head.hid);
         workLine.addHid(head.hid);
-        gold.addCoin(1);
-        head.visible = false;
+        gsap.to(head, {
+            alpha: 0,
+            duration: 0.1,
+            onComplete: () => {
+                this.coinContainer.removeChild(head);
+                if (this.coinContainer.children.length === 0) {
+                    navigation.showOverlay(WinPopup);
+                    return;
+                }
+                const currentCol = this.gameBoard[colIdx];
 
-        const currentCol = this.gameBoard[colIdx];
-
-        currentCol.forEach((head, idx) => {
-            if (idx === rowIdx - 1) {
-                head.zIndex = 4;
-            }
-            if (idx < rowIdx) {
-                gsap.to(head, {
-                    y: head.y + coinWidth + gap,
+                currentCol.forEach((head, idx) => {
+                    if (idx === rowIdx - 1) {
+                        head.zIndex = 4;
+                    }
+                    if (idx < rowIdx) {
+                        gsap.to(head, {
+                            y: head.y + coinWidth + gap,
+                            duration: 0.4,
+                            ease: 'bounce.out',
+                        });
+                    }
                 });
-            }
+            },
         });
-        // console.log('🚀 ~ GameBoard ~ handleHeadClick ~ currentCol:', currentCol);
     }
 }
 export const gameBoard = new GameBoard();
