@@ -96,31 +96,32 @@ export class Workline extends Container {
             rotation: 1,
             alpha: 1,
             duration: 0.4,
+            onComplete: () => {
+                if (count === 2) {
+                    const _children = [...this.headContainer.children];
+                    _children.forEach((item, idx) => {
+                        if (item.hid === hid) {
+                            gsap.to(item, {
+                                alpha: 0,
+                                duration: 0.2,
+                                onComplete: () => {
+                                    this.headContainer.removeChild(item);
+                                },
+                            });
+                        }
+                        if (idx > lastMatchIdx) {
+                            // item.x = item.x - (this.size * 3 + gap * 3);
+                            gsap.to(item, {
+                                x: item.x - (this.size * 3 + gap * 3),
+                                ease: 'power2.inOut',
+                                delay: 0.2,
+                                duration: 0.2,
+                            });
+                        }
+                    });
+                }
+            },
         });
-
-        if (count === 2) {
-            const _children = [...this.headContainer.children];
-            _children.forEach((item, idx) => {
-                if (item.hid === hid) {
-                    gsap.to(item, {
-                        alpha: 0,
-                        duration: 0.2,
-                        onComplete: () => {
-                            this.headContainer.removeChild(item);
-                        },
-                    });
-                }
-                if (idx > lastMatchIdx) {
-                    // item.x = item.x - (this.size * 3 + gap * 3);
-                    gsap.to(item, {
-                        x: item.x - (this.size * 3 + gap * 3),
-                        ease: 'power2.inOut',
-                        delay: 0.2,
-                        duration: 0.2,
-                    });
-                }
-            });
-        }
     }
 }
 export const workLine = new Workline();
