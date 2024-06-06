@@ -1,5 +1,5 @@
 import { Container, Graphics, Rectangle, Sprite } from 'pixi.js';
-import { randomShuffle } from '../utils/random';
+import { randomItem, randomShuffle } from '../utils/random';
 import { Head } from '../components/Head';
 import { workLine } from './Workline';
 import gsap from 'gsap';
@@ -7,6 +7,7 @@ import { designConfig } from '../utils/designConfig';
 import { navigation } from '../navigation';
 import { WinPopup } from './WinPopup';
 import { bgm, sfx } from '../utils/audio';
+import { setup } from './Setup';
 
 const innerWidth = designConfig.sixContent.width;
 const coinWidth = designConfig.sixContent.coinWidth;
@@ -17,10 +18,11 @@ export class GameBoard extends Container {
     public gameNumberBoard: number[][] = [];
     public gameBoard: Head[][] = [];
     private blockContainer: Container;
-    private coinContainer: Container;
+    private coinContainer: Container<Head>;
     private hitLine: number; // 3 or 1
     private blockLine: number; // 0~n
     private background: Graphics;
+    private clearBlockMode: boolean;
     // public onHeadClick: (hid: number) => void = () => {};
     // public onClearCol: () => void = () => {};
     constructor() {
@@ -34,6 +36,7 @@ export class GameBoard extends Container {
         // this.hitAreaSign = new Graphics();
         this.background = new Graphics();
         this.sortableChildren = true;
+        this.clearBlockMode = false;
         this.blockContainer = new Container();
         this.blockContainer.x = 0;
         this.blockContainer.y = 0;
@@ -45,40 +48,37 @@ export class GameBoard extends Container {
         this.coinContainer.eventMode = 'static';
         this.coinContainer.zIndex = 2;
         this.addChild(this.coinContainer);
-        this.init();
     }
 
-    private init() {
+    public show() {
         for (let i = 1; i <= this.col; i++) {
-            const colArr = [];
+            const colArr: number[] = [];
             for (let j = 1; j <= this.row; j++) {
                 colArr.push(j);
             }
             randomShuffle(colArr);
-            this.gameNumberBoard.push(colArr);
-        }
-    }
-    public show() {
-        this.gameNumberBoard.forEach((col, cid) => {
-            const colArr: Head[] = [];
-
-            col.forEach((hid: number, rid: number) => {
-                const head = new Head({ hid, cidx: cid });
-                head.x = cid * coinWidth + gap * (cid + 1);
-                head.y = rid * coinWidth + gap * (rid + 1);
-                head.on('pointerdown', () => {
-                    this.handleHeadClick(head, cid, rid);
-                });
-                head.zIndex = 4;
-
-                colArr.push(head);
-                this.coinContainer.addChild(head);
+            colArr.forEach((hid, idx) => {
+                this.renderHead(hid, i - 1, idx);
             });
-            this.gameBoard.push(colArr);
-        });
+            //this.gameNumberBoard.push(colArr);
+        }
         this.renderBackground();
-        this.renderHitArea();
-        this.renderVineBlock();
+        // this.renderHitArea();
+        // this.renderVineBlock();
+    }
+    renderHead(hid: number, xx: number, yy: number) {
+        const head = new Head({ hid, xx, yy });
+        head.on('pointerdown', () => {
+            this.handleHeadClick(head);
+        });
+        head.x = xx * setup.coinWidth + setup.gap * (xx + 1);
+        head.y = yy * setup.coinWidth + setup.gap * (yy + 1);
+        head.zIndex = 4;
+        this.coinContainer.addChild(head);
+        gsap.from(head, {
+            alpha: 0,
+        });
+        return head;
     }
     renderBackground() {
         this.background.roundRect(0, 0, innerWidth, this.col * coinWidth);
@@ -130,29 +130,105 @@ export class GameBoard extends Container {
         const hitH = (coinWidth + gap) * this.hitLine;
         this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
     }
-    private handleHeadClick(head: Head, colIdx: number, rowIdx: number) {
+    public clearBlocks() {
+        // open hitarea
+        gsap.fromTo(
+            this.blockContainer,
+            {
+                alpha: 1,
+            },
+            {
+                alpha: 0,
+                onComplete: () => {
+                    const hitX = 0;
+                    const hitY = 0;
+                    const hitW = innerWidth;
+                    const hitH = (coinWidth + gap) * this.gameNumberBoard.length;
+                    this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
+                    this.clearBlockMode = true;
+                },
+            },
+        );
+    }
+    public resetBlocks() {
+        gsap.to(this.blockContainer, {
+            alpha: 1,
+            onComplete: () => {
+                this.renderHitArea();
+                this.clearBlockMode = false;
+            },
+        });
+    }
+    public returnToGameboard(hid: number) {
+        // get availble col
+        const availbleCol: number[] = [];
+        const currentCol: number[] = [];
+        for (let i = 0; i < this.col; i++) {
+            currentCol.push(0);
+        }
+
+        this.coinContainer.children.forEach((head) => {
+            currentCol[head.xx] += 1; // [6,6,4,3,5,6]
+        });
+
+        currentCol.forEach((number, colIdx) => {
+            if (number < this.row) {
+                availbleCol.push(colIdx);
+            }
+        });
+        // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ availbleCol:', currentCol);
+        // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ availbleCol:', availbleCol);
+        if (availbleCol.length > 0) {
+            const randomCol = randomItem<number[]>(availbleCol) as number;
+            // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ randomCol:', randomCol);
+            const xx = randomCol;
+            const yy = this.row - currentCol[randomCol] - 1;
+            // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ this.row:', this.row);
+            this.renderHead(hid, xx, yy);
+            // const rowIdx = this.row - this.gameBoard[colIdx].length - 1;
+            // const newHead = this.renderHead(head.hid, rowIdx, colIdx);
+            // this.gameBoard[colIdx].push(newHead);
+        }
+
+        // this.gameBoard.forEach((colArr, colIdx) => {
+        //     if (colArr.length < this.col) {
+        //         availbleCol.push(colIdx);
+        //     }
+        // });
+        // if (availbleCol.length > 0) {
+        //     const colIdx = randomItem<number[]>(availbleCol) as number;
+        //     const rowIdx = this.row - this.gameBoard[colIdx].length - 1;
+
+        //     const newHead = this.renderHead(head.hid, rowIdx, colIdx);
+        //     this.gameBoard[colIdx].push(newHead);
+        // }
+        // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ availbleCol:', availbleCol);
+    }
+
+    private handleHeadClick(clickHead: Head) {
         sfx.play('audio/collect.mp3');
-        workLine.addHid(head.hid);
-        gsap.to(head, {
+        if (this.clearBlockMode) {
+            this.resetBlocks();
+        }
+        workLine.addHid(clickHead.hid);
+        gsap.to(clickHead, {
             alpha: 0,
             duration: 0.1,
             onComplete: () => {
-                this.coinContainer.removeChild(head);
+                this.coinContainer.removeChild(clickHead);
                 if (this.coinContainer.children.length === 0) {
                     navigation.showOverlay(WinPopup);
                     return;
                 }
-                const currentCol = this.gameBoard[colIdx];
-
-                currentCol.forEach((head, idx) => {
-                    if (idx === rowIdx - 1) {
-                        head.zIndex = 4;
-                    }
-                    if (idx < rowIdx) {
+                this.coinContainer.children.forEach((head: Head) => {
+                    if (head.xx === clickHead.xx && head.yy < clickHead.yy) {
                         gsap.to(head, {
                             y: head.y + coinWidth + gap,
                             duration: 0.4,
                             ease: 'bounce.out',
+                            onComplete: () => {
+                                head.yy += 1;
+                            },
                         });
                     }
                 });

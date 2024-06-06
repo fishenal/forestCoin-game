@@ -3,6 +3,7 @@ import { designConfig } from '../utils/designConfig';
 import { gameBoard } from './GameBoard';
 import { FancyButton } from '@pixi/ui';
 import { buttonAnimation } from '../utils/buttonAnimation';
+import { workLine } from './Workline';
 
 const innerWidth = designConfig.sixContent.width;
 const coinWidth = designConfig.sixContent.coinWidth;
@@ -113,9 +114,11 @@ export class Toolbarline extends Container {
     }
     private onMagicClick() {
         console.log('magic click');
+        gameBoard.clearBlocks();
     }
     private onReturnBack() {
         console.log('return back');
+        workLine.returnMode = true;
     }
     private onShuffle() {
         console.log('shuffle');

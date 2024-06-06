@@ -6,12 +6,14 @@ import { designConfig } from '../utils/designConfig';
 import { countdownline } from '../game/Countdownline';
 import { toolbarline } from '../game/Toolbarline';
 import { bgm } from '../utils/audio';
+import { SettingIcon } from '../components/SettingIcon';
 
 const innerWidth = designConfig.sixContent.width;
 class GameScreen extends Container {
     public static SCREEN_ID = 'gameScreen';
     public static assetBundles = ['imgAssets'];
     private innerContainer: Container;
+    private settingIcon: SettingIcon;
     constructor() {
         super();
         this.innerContainer = new Container();
@@ -35,6 +37,11 @@ class GameScreen extends Container {
         this.innerContainer.addChild(workLine);
         this.innerContainer.addChild(countdownline);
         this.innerContainer.addChild(toolbarline);
+        this.settingIcon = new SettingIcon();
+        this.settingIcon.x = 610;
+        this.settingIcon.y = 680;
+        this.innerContainer.addChild(this.settingIcon);
+
         // this.innerContainer.addChild(tool);
         this.addChild(background);
         // this.addChild(failPopup);
@@ -49,6 +56,8 @@ class GameScreen extends Container {
         await background.show();
         await countdownline.show();
         await toolbarline.show();
+
+        this.settingIcon.show();
         // bgm.play('audio/bird_bg.wav');
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
         // this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;

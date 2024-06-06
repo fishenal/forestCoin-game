@@ -15,11 +15,12 @@ export class Workline extends Container {
     private headContainer: Container<Head>;
     private placeholderContainer: Container<PlaceHolder>;
     private plate: Graphics;
+    public returnMode: boolean;
     public onThreeRemove: () => void = () => {};
     constructor() {
         super();
         this.limitNum = 7; //7 or 5
-
+        this.returnMode = false;
         this.size = (innerWidth - gap * (this.limitNum + 1)) / this.limitNum;
         this.width = innerWidth;
         this.height = coinWidth + gap * 2;
@@ -56,7 +57,18 @@ export class Workline extends Container {
             this.placeholderContainer.addChild(placeholder);
         }
     }
-
+    handleHeadClick(head: Head) {
+        if (this.returnMode) {
+            gameBoard.returnToGameboard(head.hid);
+            gsap.to(head, {
+                alpha: 0,
+                onComplete: () => {
+                    this.headContainer.removeChild(head);
+                    this.returnMode = false;
+                },
+            });
+        }
+    }
     public async addHid(hid: number) {
         let count = 0;
         let lastMatchIdx = 0;
@@ -92,9 +104,12 @@ export class Workline extends Container {
         head.anchor = 0.5;
         head.alpha = 0;
         head.rotation = 12;
+        head.on('pointerdown', () => {
+            this.handleHeadClick(head);
+        });
         this.headContainer.addChildAt(head, lastMatchIdx);
         gsap.to(head, {
-            rotation: 1,
+            rotation: 0,
             alpha: 1,
             duration: 0.4,
             onComplete: () => {
