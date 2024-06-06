@@ -31,7 +31,7 @@ export class FailPopup extends Container {
             },
             {
                 name: 'restart',
-                spriteName: 'Icon_Return',
+                spriteName: 'Icon_Restart',
                 action: this.onRestart,
             },
         ];
@@ -47,7 +47,7 @@ export class FailPopup extends Container {
     }
     public async hide() {}
     renderBlackMask() {
-        this.blackMask.roundRect(0, 0, this._width, this._height);
+        this.blackMask.rect(0, 0, this._width, this._height);
         this.blackMask.fill(0x000000);
         this.blackMask.alpha = 0.5;
         this.blackMask.x = 0;
@@ -58,7 +58,7 @@ export class FailPopup extends Container {
     }
 
     renderBackground() {
-        this.container.roundRect(0, 0, this._width * 0.5, this._height * 0.5);
+        this.container.rect(0, 0, this._width * 0.5, this._height * 0.5);
         this.container.fill(0xd6ad98);
         this.container.stroke({
             width: 2,

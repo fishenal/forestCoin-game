@@ -31,9 +31,9 @@ export class WinPopup extends Container {
                 action: this.onBackMenu,
             },
             {
-                name: 'restart',
-                spriteName: 'Icon_Return',
-                action: this.onRestart,
+                name: 'next',
+                spriteName: 'Icon_ArrowRight',
+                action: this.onNext,
             },
         ];
     }
@@ -49,7 +49,7 @@ export class WinPopup extends Container {
     }
     public async hide() {}
     renderBlackMask() {
-        this.blackMask.roundRect(0, 0, this._width, this._height);
+        this.blackMask.rect(0, 0, this._width, this._height);
         this.blackMask.fill(0x000000);
         this.blackMask.alpha = 0.5;
         this.blackMask.x = 0;
@@ -109,8 +109,8 @@ export class WinPopup extends Container {
     onBackMenu() {
         console.log('on back menu click');
     }
-    onRestart() {
-        console.log('on restart click');
+    onNext() {
+        console.log('on next level click');
     }
     resize(w: number, h: number) {
         this._width = w;

@@ -16,9 +16,10 @@ export class GameBoard extends Container {
     public col: number = 6;
     public gameNumberBoard: number[][] = [];
     public gameBoard: Head[][] = [];
-    private vineContainer: Container;
+    private blockContainer: Container;
     private coinContainer: Container;
     private hitLine: number; // 3 or 1
+    private blockLine: number; // 0~n
     private background: Graphics;
     // public onHeadClick: (hid: number) => void = () => {};
     // public onClearCol: () => void = () => {};
@@ -26,18 +27,19 @@ export class GameBoard extends Container {
         super();
         this.x = 0;
         this.y = 100;
-        this.hitLine = 3;
+        this.hitLine = 1;
+        this.blockLine = 3;
         this.width = innerWidth;
         this.height = this.row * coinWidth + (this.row + 1) * gap;
         // this.hitAreaSign = new Graphics();
         this.background = new Graphics();
         this.sortableChildren = true;
-        this.vineContainer = new Container();
-        this.vineContainer.x = 0;
-        this.vineContainer.y = 0;
-        this.vineContainer.zIndex = 6;
-        // this.vineContainer.x = -9999;
-        this.addChild(this.vineContainer);
+        this.blockContainer = new Container();
+        this.blockContainer.x = 0;
+        this.blockContainer.y = 0;
+        this.blockContainer.zIndex = 6;
+        // this.blockContainer.x = -9999;
+        this.addChild(this.blockContainer);
 
         this.coinContainer = new Container();
         this.coinContainer.eventMode = 'static';
@@ -76,7 +78,7 @@ export class GameBoard extends Container {
         });
         this.renderBackground();
         this.renderHitArea();
-        this.renderVine();
+        this.renderVineBlock();
     }
     renderBackground() {
         this.background.roundRect(0, 0, innerWidth, this.col * coinWidth);
@@ -91,9 +93,21 @@ export class GameBoard extends Container {
         this.background.zIndex = 1;
         this.addChild(this.background);
     }
-    renderVine() {
+    renderVineBlock() {
         this.gameNumberBoard[0].forEach((_, rid) => {
-            if (this.gameNumberBoard.length - rid > this.hitLine) {
+            if (rid + 1 <= this.blockLine) {
+                const block = Sprite.from('blockline');
+                block.x = 0;
+                block.alpha = 0;
+                block.width = innerWidth;
+                block.height = coinWidth + gap;
+                block.y = rid * coinWidth + gap * (rid + 1);
+                this.blockContainer.addChild(block);
+                this.blockContainer.x = 0;
+                gsap.to(block, {
+                    alpha: 1,
+                });
+            } else if (this.gameNumberBoard.length - rid > this.hitLine) {
                 // render vine forbid
                 const vine = Sprite.from('vine');
                 vine.x = 0;
@@ -101,8 +115,8 @@ export class GameBoard extends Container {
                 vine.width = innerWidth;
                 vine.height = coinWidth + gap;
                 vine.y = rid * coinWidth + gap * (rid + 1);
-                this.vineContainer.addChild(vine);
-                this.vineContainer.x = 0;
+                this.blockContainer.addChild(vine);
+                this.blockContainer.x = 0;
                 gsap.to(vine, {
                     alpha: 1,
                 });

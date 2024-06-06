@@ -49,7 +49,7 @@ export class Countdownline extends Container {
                 this.onCountend();
             }
             this.countDownStr.text = this.getTimeStr();
-            sfx.play('audio/clock_count.mp3');
+            // sfx.play('audio/clock_count.mp3');
         }, 1000);
     }
     private stopCount() {
