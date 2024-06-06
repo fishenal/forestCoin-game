@@ -58,12 +58,12 @@ export class FailPopup extends Container {
     }
 
     renderBackground() {
-        this.container.rect(0, 0, this._width * 0.5, this._height * 0.5);
-        this.container.fill(0xd6ad98);
-        this.container.stroke({
-            width: 2,
-            color: 0x301f23,
-        });
+        // this.container.rect(0, 0, this._width * 0.5, this._height * 0.5);
+        // this.container.fill(0xd6ad98);
+        // this.container.stroke({
+        //     width: 2,
+        //     color: 0x301f23,
+        // });
         this.container.x = this._width * 0.5;
         this.container.y = this._height * 0.5;
         this.container.pivot.x = this._width * 0.5 * 0.5;

@@ -23,7 +23,7 @@ export class Workline extends Container {
         this.size = (innerWidth - gap * (this.limitNum + 1)) / this.limitNum;
         this.width = innerWidth;
         this.height = coinWidth + gap * 2;
-        this.y = gameBoard.row * coinWidth + (gameBoard.row + 1) * gap + 110;
+        this.y = gameBoard.row * coinWidth + (gameBoard.row + 1) * gap + 80;
         this.x = 0;
         this.headContainer = new Container();
         this.headContainer.x = 0;

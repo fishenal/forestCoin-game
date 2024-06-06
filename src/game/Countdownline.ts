@@ -4,12 +4,12 @@ import { navigation } from '../navigation';
 import { FailPopup } from './FailPopup';
 import { sfx } from '../utils/audio';
 
-const innerWidth = designConfig.sixContent.width;
-const height = 90;
+const width = 200;
+const height = 30;
 const defaultSec = 200;
 export class Countdownline extends Container {
     private second: number;
-    private plate: Graphics;
+    // private plate: Graphics;
     private intervalId: NodeJS.Timeout | undefined;
     private countDownStr: Text;
     public onThreeRemove: () => void = () => {};
@@ -17,17 +17,18 @@ export class Countdownline extends Container {
     constructor() {
         super();
         this.second = defaultSec;
-        this.width = innerWidth;
+        this.width = width;
         this.height = height;
         this.y = 0;
         this.x = 0;
-        this.plate = new Graphics();
-        this.addChild(this.plate);
+        // this.plate = new Graphics();
+        // this.addChild(this.plate);
         this.countDownStr = new Text({
             text: this.getTimeStr(),
             style: {
                 fontFamily: 'CherrySwashB',
-                fill: 0x000000,
+                fill: 0xffffff,
+                fontSize: 40,
             },
         });
         this.countDownStr.y = 10;
@@ -57,12 +58,9 @@ export class Countdownline extends Container {
         clearInterval(this.intervalId);
     }
     public show() {
-        this.plate.roundRect(0, 0, innerWidth, height);
-        this.plate.fill(0xd6ad98);
-        this.plate.stroke({
-            width: 2,
-            color: 0x301f23,
-        });
+        // this.plate.roundRect(0, 0, innerWidth, height);
+        // this.plate.fill(0xd3d3d3);
+        // this.plate.alpha = 0.6;
 
         this.starCount();
     }

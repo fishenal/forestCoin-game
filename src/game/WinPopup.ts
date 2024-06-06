@@ -51,7 +51,7 @@ export class WinPopup extends Container {
     renderBlackMask() {
         this.blackMask.rect(0, 0, this._width, this._height);
         this.blackMask.fill(0x000000);
-        this.blackMask.alpha = 0.5;
+        this.blackMask.alpha = 0.8;
         this.blackMask.x = 0;
         this.blackMask.y = 0;
 
@@ -60,12 +60,12 @@ export class WinPopup extends Container {
     }
 
     renderBackground() {
-        this.container.roundRect(0, 0, this._width * 0.5, this._height * 0.5);
-        this.container.fill(0xd6ad98);
-        this.container.stroke({
-            width: 2,
-            color: 0x301f23,
-        });
+        // this.container.roundRect(0, 0, this._width * 0.5, this._height * 0.5);
+        // this.container.fill(0xd6ad98);
+        // this.container.stroke({
+        //     width: 2,
+        //     color: 0x301f23,
+        // });
         this.container.x = this._width * 0.5;
         this.container.y = this._height * 0.5;
         this.container.pivot.x = this._width * 0.5 * 0.5;

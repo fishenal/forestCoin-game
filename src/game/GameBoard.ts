@@ -26,7 +26,7 @@ export class GameBoard extends Container {
     constructor() {
         super();
         this.x = 0;
-        this.y = 100;
+        this.y = 65;
         this.hitLine = 1;
         this.blockLine = 3;
         this.width = innerWidth;

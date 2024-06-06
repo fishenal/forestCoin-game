@@ -16,14 +16,14 @@ interface ToolBarItem {
     action: () => void;
 }
 export class Toolbarline extends Container {
-    private plate: Graphics;
+    // private plate: Graphics;
     private toolArr: ToolBarItem[];
     // public debounceAdd: () => void;
     constructor() {
         super();
         this.width = width;
         this.height = height;
-        this.y = 100;
+        this.y = 0;
         this.x = innerWidth + gap;
         this.toolArr = [
             {
@@ -45,20 +45,20 @@ export class Toolbarline extends Container {
                 action: this.onShuffle,
             },
         ];
-        this.plate = new Graphics();
-        this.addChild(this.plate);
+        // this.plate = new Graphics();
+        // this.addChild(this.plate);
     }
 
     public show() {
-        this.plate.roundRect(0, 0, width, height);
-        this.plate.fill(0xd6ad98);
-        this.plate.stroke({
-            width: 2,
-            color: 0x301f23,
-        });
+        // this.plate.roundRect(0, 0, width, height);
+        // this.plate.fill(0xd6ad98);
+        // this.plate.stroke({
+        //     width: 2,
+        //     color: 0x301f23,
+        // });
         this.toolArr.forEach((item, idx) => {
             const container = this.renderToolItem(item);
-            container.y = idx * width * 1.2 + 20;
+            container.y = idx * width * 1.2 + 10;
             container.x = 10;
             this.addChild(container);
         });
@@ -66,16 +66,28 @@ export class Toolbarline extends Container {
     private renderToolItem(item: ToolBarItem) {
         const container = new Container();
         container.x = 15;
+        container.cursor = 'pointer';
+        const bg = new Graphics();
+        bg.circle(0, 0, 40);
+        bg.fill(0xd9d9d9);
+        bg.alpha = 0.6;
+        bg.x = width * 0.5;
+        bg.y = width * 0.5;
+        container.addChild(bg);
+
         const spr = Sprite.from(item.spriteName);
+        spr.anchor = 0.5;
         spr.width = width * 0.6;
         spr.height = width * 0.6;
+        spr.x = width * 0.5;
+        spr.y = width * 0.5;
         container.addChild(spr);
 
-        const bg = new Graphics();
-        bg.circle(0, 0, 20);
-        bg.fill(0x301f23);
-        bg.x = width * 0.6;
-        bg.y = width * 0.6;
+        const numBg = new Graphics();
+        numBg.circle(0, 0, 15);
+        numBg.fill(0x301f23);
+        numBg.x = width * 0.8;
+        numBg.y = width * 0.8;
         const text = new Text({
             text: item.count,
             style: {
@@ -83,10 +95,10 @@ export class Toolbarline extends Container {
                 fill: 0xffffff,
             },
         });
-        text.x = width * 0.6;
-        text.y = width * 0.6;
+        text.x = width * 0.8;
+        text.y = width * 0.8;
         text.anchor = 0.5;
-        container.addChild(bg);
+        container.addChild(numBg);
         container.addChild(text);
 
         const button = new FancyButton({
