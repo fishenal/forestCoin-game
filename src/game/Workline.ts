@@ -15,7 +15,7 @@ export class Workline extends Container {
     private headContainer: Container<Head>;
     private placeholderContainer: Container<PlaceHolder>;
     private plate: Graphics;
-    public returnMode: boolean;
+    private returnMode: boolean;
     public onThreeRemove: () => void = () => {};
     constructor() {
         super();
@@ -45,7 +45,36 @@ export class Workline extends Container {
             width: 2,
             color: 0x301f23,
         });
+
         this.renderPlaceholder();
+    }
+
+    public setReturnMode(val: boolean) {
+        this.returnMode = val;
+        if (this.returnMode) {
+            this.headContainer.children.forEach((head) => {
+                head.eventMode = 'static';
+                gsap.fromTo(
+                    head,
+                    {
+                        x: '-=2',
+                        rotation: '-0.1',
+                        yoyo: true,
+                        yoyoEase: 'power2',
+                        repeat: -1,
+                        duration: 0.1,
+                    },
+                    {
+                        x: '+=4',
+                        rotation: '0.1',
+                        yoyo: true,
+                        yoyoEase: 'power2',
+                        repeat: -1,
+                        duration: 0.1,
+                    },
+                );
+            });
+        }
     }
     renderPlaceholder() {
         for (let i = 0; i < this.limitNum; i++) {
@@ -62,83 +91,115 @@ export class Workline extends Container {
             gameBoard.returnToGameboard(head.hid);
             gsap.to(head, {
                 alpha: 0,
+                duration: 0.2,
                 onComplete: () => {
-                    this.headContainer.removeChild(head);
+                    this.removeOneHead(head);
                     this.returnMode = false;
                 },
             });
         }
     }
-    public async addHid(hid: number) {
-        let count = 0;
-        let lastMatchIdx = 0;
-
-        let alreadyHave = false;
-        // check remove 3 match
-        this.headContainer.children.forEach((item, idx) => {
-            if (item.hid === hid) {
-                lastMatchIdx = idx;
-                count++;
-                alreadyHave = true;
-            }
-        });
-        if (alreadyHave) {
-            if (lastMatchIdx < this.headContainer.children.length - 1) {
-                this.headContainer.children.forEach((item, idx) => {
-                    if (idx > lastMatchIdx) {
-                        item.x = this.size * (idx + 1) + gap * (idx + 2) + this.size / 2;
-                    }
-                });
-            }
-
-            lastMatchIdx += 1;
-        } else {
-            lastMatchIdx = this.headContainer.children.length;
-        }
-
-        const head = new Head({ hid });
+    private renderHeadAtPostion(hid: number, xx: number) {
+        // console.log(`insert new head ${hid} at ${xx}`);
+        const head = new Head({ hid, xx });
         head.width = this.size;
         head.height = this.size;
-        head.x = this.size * lastMatchIdx + gap * (lastMatchIdx + 1) + this.size / 2;
+        head.eventMode = 'none';
+        head.x = this.size * xx + gap * (xx + 1) + this.size / 2;
         head.y = gap * 2 + this.size / 2;
         head.anchor = 0.5;
-        head.alpha = 0;
-        head.rotation = 12;
+        // head.alpha = 0;
+        // head.rotation = 12;
         head.on('pointerdown', () => {
             this.handleHeadClick(head);
         });
-        this.headContainer.addChildAt(head, lastMatchIdx);
-        gsap.to(head, {
-            rotation: 0,
-            alpha: 1,
-            duration: 0.4,
-            onComplete: () => {
-                if (count === 2) {
-                    sfx.play('audio/remove.mp3');
-                    const _children = [...this.headContainer.children];
-                    _children.forEach((item, idx) => {
-                        if (item.hid === hid) {
-                            gsap.to(item, {
-                                alpha: 0,
-                                duration: 0.2,
-                                onComplete: () => {
-                                    this.headContainer.removeChild(item);
-                                },
-                            });
-                        }
-                        if (idx > lastMatchIdx) {
-                            // item.x = item.x - (this.size * 3 + gap * 3);
-                            gsap.to(item, {
-                                x: item.x - (this.size * 3 + gap * 3),
-                                ease: 'power2.inOut',
-                                delay: 0.2,
-                                duration: 0.2,
-                            });
-                        }
-                    });
-                }
-            },
+        this.headContainer.addChildAt(head, xx);
+        gsap.from(head, {
+            rotation: 4,
         });
+    }
+    private removeOneHead(head: Head) {
+        let afterRemove = false;
+        // sfx.play('audio/remove.mp3');
+        this.headContainer.children.forEach((item) => {
+            gsap.killTweensOf(item);
+            item.eventMode = 'none';
+            if (item.hid === head.hid && item.xx === head.xx) {
+                gsap.to(item, {
+                    alpha: 0,
+                    duration: 0.2,
+                    onComplete: () => {
+                        this.headContainer.removeChild(item);
+                    },
+                });
+                afterRemove = true;
+            }
+            if (afterRemove) {
+                gsap.to(item, {
+                    x: `-=${this.size + gap}`,
+                    ease: 'bounce.out',
+                    duration: 0.4,
+                    onComplete: () => {
+                        item.xx -= 1;
+                    },
+                });
+            }
+        });
+    }
+    private removeHead(hid: number, removeNumber: number) {
+        let afterRemove = false;
+        sfx.play('audio/remove.mp3');
+        // const _children = [...this.headContainer.children];
+        this.headContainer.children.forEach((item) => {
+            if (item.hid === hid) {
+                gsap.to(item, {
+                    alpha: 0,
+                    duration: 0.2,
+                    onComplete: () => {
+                        this.headContainer.removeChild(item);
+                    },
+                });
+                afterRemove = true;
+            }
+            if (afterRemove && item.hid !== hid) {
+                // item.x = item.x - (this.size * 3 + gap * 3);
+                gsap.to(item, {
+                    x: item.x - (this.size * removeNumber + gap * removeNumber),
+                    ease: 'bounce.out',
+
+                    duration: 0.4,
+                    onComplete: () => {
+                        item.xx -= removeNumber;
+                    },
+                });
+            }
+        });
+    }
+    public async addHid(hid: number) {
+        let count = 0;
+
+        let alreadyHave = false;
+        let xxPosition = this.headContainer.children.length;
+        // check remove 3 match
+        this.headContainer.children.forEach((item, idx) => {
+            if (item.hid === hid) {
+                xxPosition = idx + 1;
+                count++;
+                alreadyHave = true;
+            }
+            if (alreadyHave && item.hid !== hid) {
+                item.x = this.size * (idx + 1) + gap * (idx + 2) + this.size / 2;
+                item.xx = idx + 1;
+                //console.log(`move item ${item.hid} to x ${item.x}, after item.xx is ${item.xx}`);
+            }
+        });
+        this.renderHeadAtPostion(hid, xxPosition);
+
+        // console.log(`after move count is ${count}`);
+
+        if (count === 2) {
+            this.removeHead(hid, 3);
+        }
     }
 }
 export const workLine = new Workline();

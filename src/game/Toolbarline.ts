@@ -136,7 +136,7 @@ export class Toolbarline extends Container {
         if (returnTool && returnTool.count > 0) {
             returnTool.count -= 1;
             this.countTextArr[1].text = returnTool.count;
-            workLine.returnMode = true;
+            workLine.setReturnMode(true);
         }
     }
     private onShuffle() {
