@@ -1,5 +1,7 @@
 import { Sprite, Texture } from 'pixi.js';
 import { setup } from '../game/Setup';
+
+const coinWidth = setup.getConfigData().coinWidth;
 export class Head extends Sprite {
     public hid: number;
     public xx: number;
@@ -7,8 +9,8 @@ export class Head extends Sprite {
     constructor({ hid, xx, yy }: { hid: number; xx?: number; yy?: number }) {
         super({
             texture: Texture.from(`head/h${hid}`),
-            width: setup.coinWidth,
-            height: setup.coinWidth,
+            width: coinWidth,
+            height: coinWidth,
         });
         this.anchor = 0.5;
         this.on('pointerenter', () => {

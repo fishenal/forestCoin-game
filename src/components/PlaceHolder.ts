@@ -1,7 +1,8 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
 import { designConfig } from '../utils/designConfig';
+import { setup } from '../game/Setup';
 
-const coinWidth = designConfig.sixContent.coinWidth;
+const { coinWidth } = setup.getConfigData();
 export class PlaceHolder extends Container {
     // public number: number;
     constructor({ number }: { number: number }) {

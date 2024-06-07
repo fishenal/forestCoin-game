@@ -5,10 +5,9 @@ import { gameBoard } from './GameBoard';
 import { designConfig } from '../utils/designConfig';
 import { PlaceHolder } from '../components/PlaceHolder';
 import { sfx } from '../utils/audio';
+import { setup } from './Setup';
 
-const innerWidth = designConfig.sixContent.width;
-const coinWidth = designConfig.sixContent.coinWidth;
-const gap = designConfig.sixContent.gap;
+const { innerWidth, coinWidth, gap, row } = setup.getConfigData();
 export class Workline extends Container {
     private limitNum: number;
     private size: number;
@@ -23,8 +22,8 @@ export class Workline extends Container {
         this.returnMode = false;
         this.size = (innerWidth - gap * (this.limitNum + 1)) / this.limitNum;
         this.width = innerWidth;
-        this.height = coinWidth + gap * 2;
-        this.y = gameBoard.row * coinWidth + (gameBoard.row + 1) * gap + 80;
+        this.height = this.size + gap * 2;
+        this.y = row * coinWidth + (row + 1) * gap + 80;
         this.x = 0;
         this.headContainer = new Container();
         this.headContainer.x = 0;
@@ -39,7 +38,7 @@ export class Workline extends Container {
         this.addChild(this.placeholderContainer);
     }
     public show() {
-        this.plate.roundRect(0, 0, innerWidth, coinWidth + gap * 2);
+        this.plate.roundRect(0, 0, innerWidth, this.size + gap * 2);
         this.plate.fill(0x69a5c9);
         this.plate.stroke({
             width: 2,
@@ -80,7 +79,7 @@ export class Workline extends Container {
         for (let i = 0; i < this.limitNum; i++) {
             const placeholder = new PlaceHolder({ number: i + 1 });
             placeholder.x = this.size * i + gap * (i + 1);
-            placeholder.y = gap * 2;
+            placeholder.y = gap;
             placeholder.width = this.size;
             placeholder.height = this.size;
             this.placeholderContainer.addChild(placeholder);

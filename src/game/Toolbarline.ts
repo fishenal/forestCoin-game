@@ -4,11 +4,10 @@ import { gameBoard } from './GameBoard';
 import { FancyButton } from '@pixi/ui';
 import { buttonAnimation } from '../utils/buttonAnimation';
 import { workLine } from './Workline';
+import { setup } from './Setup';
 
-const innerWidth = designConfig.sixContent.width;
-const coinWidth = designConfig.sixContent.coinWidth;
-const gap = designConfig.sixContent.gap;
-const height = gameBoard.row * coinWidth + (gameBoard.row + 1) * gap;
+const { innerWidth, coinWidth, gap, row } = setup.getConfigData();
+const height = row * coinWidth + (row + 1) * gap;
 const width = coinWidth;
 interface ToolBarItem {
     name: string;

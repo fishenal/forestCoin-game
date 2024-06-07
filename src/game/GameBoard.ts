@@ -9,12 +9,10 @@ import { WinPopup } from './WinPopup';
 import { bgm, sfx } from '../utils/audio';
 import { setup } from './Setup';
 
-const innerWidth = designConfig.sixContent.width;
-const coinWidth = designConfig.sixContent.coinWidth;
-const gap = designConfig.sixContent.gap;
+const { innerWidth, coinWidth, gap, row, col } = setup.getConfigData();
 export class GameBoard extends Container {
-    public row: number = 6;
-    public col: number = 6;
+    public row: number = row;
+    public col: number = col;
     public gameBoard: Head[][] = [];
     private blockContainer: Container;
     private coinContainer: Container<Head>;
@@ -71,8 +69,8 @@ export class GameBoard extends Container {
         head.on('pointerdown', () => {
             this.handleHeadClick(head);
         });
-        head.x = xx * setup.coinWidth + setup.gap * (xx + 1);
-        head.y = yy * setup.coinWidth + setup.gap * (yy + 1);
+        head.x = xx * coinWidth + gap * (xx + 1);
+        head.y = yy * coinWidth + gap * (yy + 1);
         head.zIndex = 4;
         this.coinContainer.addChild(head);
         gsap.from(head, {
