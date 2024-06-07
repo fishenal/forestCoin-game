@@ -113,15 +113,13 @@ export class Toolbarline extends Container {
         return button;
     }
     private onMagicClick() {
-        console.log('magic click');
         gameBoard.clearBlocks();
     }
     private onReturnBack() {
-        console.log('return back');
         workLine.returnMode = true;
     }
     private onShuffle() {
-        console.log('shuffle');
+        gameBoard.shuffle();
     }
 }
 export const toolbarline = new Toolbarline();

@@ -47,6 +47,8 @@ export class GameBoard extends Container {
         this.coinContainer = new Container();
         this.coinContainer.eventMode = 'static';
         this.coinContainer.zIndex = 2;
+        this.coinContainer.x = coinWidth / 2;
+        this.coinContainer.y = coinWidth / 2;
         this.addChild(this.coinContainer);
     }
 
@@ -176,33 +178,44 @@ export class GameBoard extends Container {
                 availbleCol.push(colIdx);
             }
         });
-        // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ availbleCol:', currentCol);
-        // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ availbleCol:', availbleCol);
         if (availbleCol.length > 0) {
             const randomCol = randomItem<number[]>(availbleCol) as number;
-            // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ randomCol:', randomCol);
             const xx = randomCol;
             const yy = this.row - currentCol[randomCol] - 1;
-            // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ this.row:', this.row);
             this.renderHead(hid, xx, yy);
-            // const rowIdx = this.row - this.gameBoard[colIdx].length - 1;
-            // const newHead = this.renderHead(head.hid, rowIdx, colIdx);
-            // this.gameBoard[colIdx].push(newHead);
         }
+    }
+    public shuffle() {
+        sfx.play('audio/hover.wav');
+        const coinArr = [...this.coinContainer.children];
+        let swapArr = [];
+        while (coinArr.length > 1) {
+            const randomIdx = Math.floor(Math.random() * coinArr.length);
+            const item: Head = coinArr.splice(randomIdx, 1)[0];
+            swapArr.push(item);
+            if (swapArr.length === 2) {
+                this.swap(swapArr[0], swapArr[1]);
+                swapArr = [];
+            }
+        }
+    }
+    private swap(head1: Head, head2: Head) {
+        const { xx, yy, x, y, hid } = head1;
+        gsap.to(head1, {
+            xx: head2.xx,
+            yy: head2.yy,
+            x: head2.x,
+            y: head2.y,
+            hid: head2.hid,
+        });
 
-        // this.gameBoard.forEach((colArr, colIdx) => {
-        //     if (colArr.length < this.col) {
-        //         availbleCol.push(colIdx);
-        //     }
-        // });
-        // if (availbleCol.length > 0) {
-        //     const colIdx = randomItem<number[]>(availbleCol) as number;
-        //     const rowIdx = this.row - this.gameBoard[colIdx].length - 1;
-
-        //     const newHead = this.renderHead(head.hid, rowIdx, colIdx);
-        //     this.gameBoard[colIdx].push(newHead);
-        // }
-        // console.log('🚀 ~ GameBoard ~ returnToGameboard ~ availbleCol:', availbleCol);
+        gsap.to(head2, {
+            xx,
+            yy,
+            x,
+            y,
+            hid,
+        });
     }
 
     private handleHeadClick(clickHead: Head) {

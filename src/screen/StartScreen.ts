@@ -22,7 +22,6 @@ class StartScreen extends Container {
         this.innerContainer.x = 100;
         this.innerContainer.y = 0;
         this.innerContainer.width = innerWidth;
-        console.log('🚀 ~ StartScreen ~ constructor ~ innerWidth:', innerWidth);
 
         this.innerContainer.addChild(title);
         this.innerContainer.addChild(levelBoard);
@@ -69,7 +68,7 @@ class StartScreen extends Container {
         // this.innerContainer.x = 15;
         this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
         this.innerContainer.y = 60;
-        this.logoContainer.y = h * 0.8;
+        this.logoContainer.y = h * 0.85;
         this.logoContainer.x = innerWidth * 0.8;
     }
 }
