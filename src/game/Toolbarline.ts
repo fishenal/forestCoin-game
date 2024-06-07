@@ -19,6 +19,7 @@ interface ToolBarItem {
 export class Toolbarline extends Container {
     // private plate: Graphics;
     private toolArr: ToolBarItem[];
+    private countTextArr: Text[];
     // public debounceAdd: () => void;
     constructor() {
         super();
@@ -30,22 +31,29 @@ export class Toolbarline extends Container {
             {
                 name: 'magic_click',
                 spriteName: 'Icon_Magic',
-                count: 1,
-                action: this.onMagicClick,
+                count: 5,
+                action: () => {
+                    this.onMagicClick();
+                },
             },
             {
                 name: 'return_back',
                 spriteName: 'Icon_Return',
-                count: 1,
-                action: this.onReturnBack,
+                count: 5,
+                action: () => {
+                    this.onReturnBack();
+                },
             },
             {
                 name: 'shuffle',
                 spriteName: 'Icon_Helix',
-                count: 1,
-                action: this.onShuffle,
+                count: 5,
+                action: () => {
+                    this.onShuffle();
+                },
             },
         ];
+        this.countTextArr = [];
         // this.plate = new Graphics();
         // this.addChild(this.plate);
     }
@@ -67,7 +75,7 @@ export class Toolbarline extends Container {
     private renderToolItem(item: ToolBarItem) {
         const container = new Container();
         container.x = 15;
-        container.cursor = 'pointer';
+        // container.cursor = 'pointer';
         const bg = new Graphics();
         bg.circle(0, 0, 40);
         bg.fill(0xd9d9d9);
@@ -99,6 +107,7 @@ export class Toolbarline extends Container {
         text.x = width * 0.8;
         text.y = width * 0.8;
         text.anchor = 0.5;
+        this.countTextArr.push(text);
         container.addChild(numBg);
         container.addChild(text);
 
@@ -113,13 +122,31 @@ export class Toolbarline extends Container {
         return button;
     }
     private onMagicClick() {
-        gameBoard.clearBlocks();
+        const magicTool = this.toolArr.find((item) => item.name === 'magic_click');
+
+        if (magicTool && magicTool.count > 0) {
+            magicTool.count -= 1;
+            this.countTextArr[0].text = magicTool.count;
+            gameBoard.clearBlocks();
+        }
     }
     private onReturnBack() {
-        workLine.returnMode = true;
+        const returnTool = this.toolArr.find((item) => item.name === 'return_back');
+
+        if (returnTool && returnTool.count > 0) {
+            returnTool.count -= 1;
+            this.countTextArr[1].text = returnTool.count;
+            workLine.returnMode = true;
+        }
     }
     private onShuffle() {
-        gameBoard.shuffle();
+        const shuffleTool = this.toolArr.find((item) => item.name === 'shuffle');
+
+        if (shuffleTool && shuffleTool.count > 0) {
+            shuffleTool.count -= 1;
+            this.countTextArr[2].text = shuffleTool.count;
+            gameBoard.shuffle();
+        }
     }
 }
 export const toolbarline = new Toolbarline();

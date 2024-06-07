@@ -15,7 +15,6 @@ const gap = designConfig.sixContent.gap;
 export class GameBoard extends Container {
     public row: number = 6;
     public col: number = 6;
-    public gameNumberBoard: number[][] = [];
     public gameBoard: Head[][] = [];
     private blockContainer: Container;
     private coinContainer: Container<Head>;
@@ -62,11 +61,10 @@ export class GameBoard extends Container {
             colArr.forEach((hid, idx) => {
                 this.renderHead(hid, i - 1, idx);
             });
-            //this.gameNumberBoard.push(colArr);
         }
         this.renderBackground();
-        // this.renderHitArea();
-        // this.renderVineBlock();
+        this.renderHitArea();
+        this.renderVineBlock();
     }
     renderHead(hid: number, xx: number, yy: number) {
         const head = new Head({ hid, xx, yy });
@@ -96,38 +94,38 @@ export class GameBoard extends Container {
         this.addChild(this.background);
     }
     renderVineBlock() {
-        this.gameNumberBoard[0].forEach((_, rid) => {
-            if (rid + 1 <= this.blockLine) {
+        for (let i = 0; i < this.row; i++) {
+            if (i + 1 <= this.blockLine) {
                 const block = Sprite.from('blockline');
                 block.x = 0;
                 block.alpha = 0;
                 block.width = innerWidth;
                 block.height = coinWidth + gap;
-                block.y = rid * coinWidth + gap * (rid + 1);
+                block.y = i * coinWidth + gap * (i + 1);
                 this.blockContainer.addChild(block);
                 this.blockContainer.x = 0;
                 gsap.to(block, {
                     alpha: 1,
                 });
-            } else if (this.gameNumberBoard.length - rid > this.hitLine) {
+            } else if (this.row - i > this.hitLine) {
                 // render vine forbid
                 const vine = Sprite.from('vine');
                 vine.x = 0;
                 vine.alpha = 0;
                 vine.width = innerWidth;
                 vine.height = coinWidth + gap;
-                vine.y = rid * coinWidth + gap * (rid + 1);
+                vine.y = i * coinWidth + gap * (i + 1);
                 this.blockContainer.addChild(vine);
                 this.blockContainer.x = 0;
                 gsap.to(vine, {
                     alpha: 1,
                 });
             }
-        });
+        }
     }
     renderHitArea() {
         const hitX = 0;
-        const hitY = (this.gameNumberBoard.length - this.hitLine) * (coinWidth + gap);
+        const hitY = (this.row - this.hitLine) * (coinWidth + gap);
         const hitW = innerWidth;
         const hitH = (coinWidth + gap) * this.hitLine;
         this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
@@ -145,7 +143,7 @@ export class GameBoard extends Container {
                     const hitX = 0;
                     const hitY = 0;
                     const hitW = innerWidth;
-                    const hitH = (coinWidth + gap) * this.gameNumberBoard.length;
+                    const hitH = (coinWidth + gap) * this.row;
                     this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
                     this.clearBlockMode = true;
                 },
@@ -207,6 +205,7 @@ export class GameBoard extends Container {
             x: head2.x,
             y: head2.y,
             hid: head2.hid,
+            duration: 0.2,
         });
 
         gsap.to(head2, {
@@ -215,6 +214,7 @@ export class GameBoard extends Container {
             x,
             y,
             hid,
+            duration: 0.2,
         });
     }
 
