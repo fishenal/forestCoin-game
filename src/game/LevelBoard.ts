@@ -6,17 +6,18 @@ import { navigation } from '../navigation';
 import GameScreen from '../screen/GameScreen';
 import { buttonAnimation } from '../utils/buttonAnimation';
 import { sfx } from '../utils/audio';
+import { setup } from './Setup';
 
 const innerWidth = designConfig.sixContent.width;
 
 export class Level extends Container {
-    private levelNum: number;
+    private levelNum: number; // from 1
     private lightenNum: number;
     private gap: number;
-    constructor(levelNum: number, lightenNum: number) {
+    constructor(level: number, lightenNum: number) {
         super();
         const width = innerWidth / 3;
-        this.levelNum = levelNum;
+        this.levelNum = level + 1;
         this.lightenNum = lightenNum;
         this.gap = 30;
         this.x = 0;
@@ -53,7 +54,7 @@ export class Level extends Container {
             hoverView: this.getButtonView(hoverColor),
             pressedView: this.getButtonView(color),
             text: new Text({
-                text: String(this.levelNum + 1),
+                text: String(this.levelNum),
                 style: {
                     fontFamily: 'CherrySwashB',
                     fill: darkColor,
@@ -74,7 +75,9 @@ export class Level extends Container {
         });
         button.x = this.gap;
         button.y = this.gap;
-        button.onPress.connect(this.handleOnPress);
+        button.onPress.connect(() => {
+            this.handleOnPress();
+        });
         this.addChild(button);
         // const width = innerWidth / 3;
         // const gap = 30;
@@ -104,6 +107,7 @@ export class Level extends Container {
     }
     handleOnPress() {
         sfx.play('audio/click.mp3');
+        setup.level = this.levelNum;
         navigation.goToScreen(GameScreen);
     }
 }
@@ -126,7 +130,7 @@ export class LevelBoard extends Container {
         });
         this.addChild(board);
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 6; i++) {
             const level = new Level(i, 1);
             level.y = Math.floor(i / 3) * 150;
             level.x = (i % 3) * 190;

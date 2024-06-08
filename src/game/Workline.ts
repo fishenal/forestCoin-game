@@ -2,26 +2,34 @@ import { Container, Graphics } from 'pixi.js';
 import { Head } from '../components/Head';
 import gsap from 'gsap';
 import { gameBoard } from './GameBoard';
-import { designConfig } from '../utils/designConfig';
 import { PlaceHolder } from '../components/PlaceHolder';
 import { sfx } from '../utils/audio';
 import { setup } from './Setup';
 
-const { innerWidth, coinWidth, gap, row } = setup.getConfigData();
 export class Workline extends Container {
-    private limitNum: number;
-    private size: number;
-    private headContainer: Container<Head>;
-    private placeholderContainer: Container<PlaceHolder>;
-    private plate: Graphics;
-    private returnMode: boolean;
+    private limitNum!: number;
+    private size!: number;
+    private headContainer!: Container<Head>;
+    private placeholderContainer!: Container<PlaceHolder>;
+    private plate!: Graphics;
+    private returnMode!: boolean;
+
+    private innerWidth!: number;
+    private gap!: number;
     public onThreeRemove: () => void = () => {};
     constructor() {
         super();
+    }
+
+    private init() {
+        const { innerWidth, coinWidth, gap, row } = setup.getConfigData();
+        this.innerWidth = innerWidth;
+        this.gap = gap;
+
         this.limitNum = 7; //7 or 5
         this.returnMode = false;
-        this.size = (innerWidth - gap * (this.limitNum + 1)) / this.limitNum;
-        this.width = innerWidth;
+        this.size = (this.innerWidth - gap * (this.limitNum + 1)) / this.limitNum;
+        this.width = this.innerWidth;
         this.height = this.size + gap * 2;
         this.y = row * coinWidth + (row + 1) * gap + 80;
         this.x = 0;
@@ -37,8 +45,10 @@ export class Workline extends Container {
         this.addChild(this.headContainer);
         this.addChild(this.placeholderContainer);
     }
+
     public show() {
-        this.plate.roundRect(0, 0, innerWidth, this.size + gap * 2);
+        this.init();
+        this.plate.roundRect(0, 0, this.innerWidth, this.size + this.gap * 2);
         this.plate.fill(0x69a5c9);
         this.plate.stroke({
             width: 2,
@@ -77,11 +87,9 @@ export class Workline extends Container {
     }
     renderPlaceholder() {
         for (let i = 0; i < this.limitNum; i++) {
-            const placeholder = new PlaceHolder({ number: i + 1 });
-            placeholder.x = this.size * i + gap * (i + 1);
-            placeholder.y = gap;
-            placeholder.width = this.size;
-            placeholder.height = this.size;
+            const placeholder = new PlaceHolder({ number: i + 1, size: this.size });
+            placeholder.x = this.size * i + this.gap * (i + 1);
+            placeholder.y = this.gap;
             this.placeholderContainer.addChild(placeholder);
         }
     }
@@ -100,12 +108,10 @@ export class Workline extends Container {
     }
     private renderHeadAtPostion(hid: number, xx: number) {
         // console.log(`insert new head ${hid} at ${xx}`);
-        const head = new Head({ hid, xx });
-        head.width = this.size;
-        head.height = this.size;
+        const head = new Head({ hid, xx, width: this.size, height: this.size });
         head.eventMode = 'none';
-        head.x = this.size * xx + gap * (xx + 1) + this.size / 2;
-        head.y = gap * 2 + this.size / 2;
+        head.x = this.size * xx + this.gap * (xx + 1) + this.size / 2;
+        head.y = this.gap + this.size / 2;
         head.anchor = 0.5;
         // head.alpha = 0;
         // head.rotation = 12;
@@ -135,7 +141,7 @@ export class Workline extends Container {
             }
             if (afterRemove) {
                 gsap.to(item, {
-                    x: `-=${this.size + gap}`,
+                    x: `-=${this.size + this.gap}`,
                     ease: 'bounce.out',
                     duration: 0.4,
                     onComplete: () => {
@@ -161,9 +167,9 @@ export class Workline extends Container {
                 afterRemove = true;
             }
             if (afterRemove && item.hid !== hid) {
-                // item.x = item.x - (this.size * 3 + gap * 3);
+                // item.x = item.x - (this.size * 3 + this.gap * 3);
                 gsap.to(item, {
-                    x: item.x - (this.size * removeNumber + gap * removeNumber),
+                    x: item.x - (this.size * removeNumber + this.gap * removeNumber),
                     ease: 'bounce.out',
 
                     duration: 0.4,
@@ -187,7 +193,7 @@ export class Workline extends Container {
                 alreadyHave = true;
             }
             if (alreadyHave && item.hid !== hid) {
-                item.x = this.size * (idx + 1) + gap * (idx + 2) + this.size / 2;
+                item.x = this.size * (idx + 1) + this.gap * (idx + 2) + this.size / 2;
                 item.xx = idx + 1;
                 //console.log(`move item ${item.hid} to x ${item.x}, after item.xx is ${item.xx}`);
             }

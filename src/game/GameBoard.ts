@@ -9,25 +9,35 @@ import { WinPopup } from './WinPopup';
 import { bgm, sfx } from '../utils/audio';
 import { setup } from './Setup';
 
-const { innerWidth, coinWidth, gap, row, col } = setup.getConfigData();
 export class GameBoard extends Container {
-    public row: number = row;
-    public col: number = col;
+    public row!: number;
+    public col!: number;
     public gameBoard: Head[][] = [];
-    private blockContainer: Container;
-    private coinContainer: Container<Head>;
-    private hitLine: number; // 3 or 1
-    private blockLine: number; // 0~n
-    private background: Graphics;
-    private clearBlockMode: boolean;
+    private blockContainer!: Container;
+    private coinContainer!: Container<Head>;
+    private hitLine!: number; // 3 or 1
+    private blockLine!: number; // 0~n
+    private background!: Graphics;
+    private clearBlockMode!: boolean;
+    private coinWidth!: number;
+    private innerWidth!: number;
+    private gap!: number;
     // public onHeadClick: (hid: number) => void = () => {};
     // public onClearCol: () => void = () => {};
     constructor() {
         super();
+    }
+    private init() {
+        const { innerWidth, coinWidth, gap, row, col, hitLine, blockLine } = setup.getConfigData();
+        this.hitLine = hitLine;
+        this.blockLine = blockLine;
+        this.innerWidth = innerWidth;
+        this.coinWidth = coinWidth;
+        this.gap = gap;
+        this.row = row;
+        this.col = col;
         this.x = 0;
         this.y = 65;
-        this.hitLine = 1;
-        this.blockLine = 3;
         this.width = innerWidth;
         this.height = this.row * coinWidth + (this.row + 1) * gap;
         // this.hitAreaSign = new Graphics();
@@ -48,8 +58,8 @@ export class GameBoard extends Container {
         this.coinContainer.y = coinWidth / 2;
         this.addChild(this.coinContainer);
     }
-
     public show() {
+        this.init();
         for (let i = 1; i <= this.col; i++) {
             const colArr: number[] = [];
             for (let j = 1; j <= this.row; j++) {
@@ -65,12 +75,12 @@ export class GameBoard extends Container {
         this.renderVineBlock();
     }
     renderHead(hid: number, xx: number, yy: number) {
-        const head = new Head({ hid, xx, yy });
+        const head = new Head({ hid, xx, yy, width: this.coinWidth, height: this.coinWidth });
         head.on('pointerdown', () => {
             this.handleHeadClick(head);
         });
-        head.x = xx * coinWidth + gap * (xx + 1);
-        head.y = yy * coinWidth + gap * (yy + 1);
+        head.x = xx * this.coinWidth + this.gap * (xx + 1);
+        head.y = yy * this.coinWidth + this.gap * (yy + 1);
         head.zIndex = 4;
         this.coinContainer.addChild(head);
         gsap.from(head, {
@@ -79,14 +89,14 @@ export class GameBoard extends Container {
         return head;
     }
     renderBackground() {
-        this.background.roundRect(0, 0, innerWidth, this.col * coinWidth);
+        this.background.roundRect(0, 0, this.innerWidth, this.col * this.coinWidth);
         this.background.fill(0xd6ad98);
         this.background.stroke({
             width: 2,
             color: 0x301f23,
         });
-        this.background.width = innerWidth;
-        this.background.height = this.col * coinWidth + (this.col + 1) * gap;
+        this.background.width = this.innerWidth;
+        this.background.height = this.col * this.coinWidth + (this.col + 1) * this.gap;
         // this.background.alpha = 0.5;
         this.background.zIndex = 1;
         this.addChild(this.background);
@@ -97,9 +107,9 @@ export class GameBoard extends Container {
                 const block = Sprite.from('blockline');
                 block.x = 0;
                 block.alpha = 0;
-                block.width = innerWidth;
-                block.height = coinWidth + gap;
-                block.y = i * coinWidth + gap * (i + 1);
+                block.width = this.innerWidth;
+                block.height = this.coinWidth + this.gap;
+                block.y = i * this.coinWidth + this.gap * (i + 1);
                 this.blockContainer.addChild(block);
                 this.blockContainer.x = 0;
                 gsap.to(block, {
@@ -110,9 +120,9 @@ export class GameBoard extends Container {
                 const vine = Sprite.from('vine');
                 vine.x = 0;
                 vine.alpha = 0;
-                vine.width = innerWidth;
-                vine.height = coinWidth + gap;
-                vine.y = i * coinWidth + gap * (i + 1);
+                vine.width = this.innerWidth;
+                vine.height = this.coinWidth + this.gap;
+                vine.y = i * this.coinWidth + this.gap * (i + 1);
                 this.blockContainer.addChild(vine);
                 this.blockContainer.x = 0;
                 gsap.to(vine, {
@@ -123,9 +133,9 @@ export class GameBoard extends Container {
     }
     renderHitArea() {
         const hitX = 0;
-        const hitY = (this.row - this.hitLine) * (coinWidth + gap);
-        const hitW = innerWidth;
-        const hitH = (coinWidth + gap) * this.hitLine;
+        const hitY = (this.row - this.hitLine) * (this.coinWidth + this.gap);
+        const hitW = this.innerWidth;
+        const hitH = (this.coinWidth + this.gap) * this.hitLine;
         this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
     }
     public clearBlocks() {
@@ -140,8 +150,8 @@ export class GameBoard extends Container {
                 onComplete: () => {
                     const hitX = 0;
                     const hitY = 0;
-                    const hitW = innerWidth;
-                    const hitH = (coinWidth + gap) * this.row;
+                    const hitW = this.innerWidth;
+                    const hitH = (this.coinWidth + this.gap) * this.row;
                     this.hitArea = new Rectangle(hitX, hitY, hitW, hitH);
                     this.clearBlockMode = true;
                 },
@@ -234,7 +244,7 @@ export class GameBoard extends Container {
                 this.coinContainer.children.forEach((head: Head) => {
                     if (head.xx === clickHead.xx && head.yy < clickHead.yy) {
                         gsap.to(head, {
-                            y: head.y + coinWidth + gap,
+                            y: head.y + this.coinWidth + this.gap,
                             duration: 0.4,
                             ease: 'bounce.out',
                             onComplete: () => {
