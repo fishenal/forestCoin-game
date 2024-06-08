@@ -1,14 +1,10 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
-import { designConfig } from '../utils/designConfig';
 import { gameBoard } from './GameBoard';
 import { FancyButton } from '@pixi/ui';
 import { buttonAnimation } from '../utils/buttonAnimation';
 import { workLine } from './Workline';
 import { setup } from './Setup';
 
-const { innerWidth, coinWidth, gap, row } = setup.getConfigData();
-const height = row * coinWidth + (row + 1) * gap;
-const width = coinWidth;
 interface ToolBarItem {
     name: string;
     spriteName: string;
@@ -17,13 +13,18 @@ interface ToolBarItem {
 }
 export class Toolbarline extends Container {
     // private plate: Graphics;
-    private toolArr: ToolBarItem[];
-    private countTextArr: Text[];
+    private toolArr!: ToolBarItem[];
+    private countTextArr!: Text[];
     // public debounceAdd: () => void;
     constructor() {
         super();
-        this.width = width;
-        this.height = height;
+
+        // this.plate = new Graphics();
+        // this.addChild(this.plate);
+    }
+    private init() {
+        const { innerWidth, gap } = setup.getConfigData();
+        this.width = 60;
         this.y = 0;
         this.x = innerWidth + gap;
         this.toolArr = [
@@ -53,11 +54,9 @@ export class Toolbarline extends Container {
             },
         ];
         this.countTextArr = [];
-        // this.plate = new Graphics();
-        // this.addChild(this.plate);
     }
-
     public show() {
+        this.init();
         // this.plate.roundRect(0, 0, width, height);
         // this.plate.fill(0xd6ad98);
         // this.plate.stroke({
@@ -66,7 +65,7 @@ export class Toolbarline extends Container {
         // });
         this.toolArr.forEach((item, idx) => {
             const container = this.renderToolItem(item);
-            container.y = idx * width * 1.2 + 10;
+            container.y = idx * 70 + 60;
             container.x = 10;
             this.addChild(container);
         });
@@ -76,35 +75,36 @@ export class Toolbarline extends Container {
         container.x = 15;
         // container.cursor = 'pointer';
         const bg = new Graphics();
-        bg.circle(0, 0, 40);
+        bg.circle(0, 0, 30);
         bg.fill(0xd9d9d9);
         bg.alpha = 0.6;
-        bg.x = width * 0.5;
-        bg.y = width * 0.5;
+        bg.x = 60 * 0.5;
+        bg.y = 60 * 0.5;
         container.addChild(bg);
 
         const spr = Sprite.from(item.spriteName);
         spr.anchor = 0.5;
-        spr.width = width * 0.6;
-        spr.height = width * 0.6;
-        spr.x = width * 0.5;
-        spr.y = width * 0.5;
+        spr.width = 60 * 0.6;
+        spr.height = 60 * 0.6;
+        spr.x = 60 * 0.5;
+        spr.y = 60 * 0.5;
         container.addChild(spr);
 
         const numBg = new Graphics();
-        numBg.circle(0, 0, 15);
+        numBg.circle(0, 0, 12);
         numBg.fill(0x301f23);
-        numBg.x = width * 0.8;
-        numBg.y = width * 0.8;
+        numBg.x = 60 * 0.8;
+        numBg.y = 60 * 0.8;
         const text = new Text({
             text: item.count,
             style: {
                 fontFamily: 'CherrySwashB',
                 fill: 0xffffff,
+                fontSize: 16,
             },
         });
-        text.x = width * 0.8;
-        text.y = width * 0.8;
+        text.x = 60 * 0.8;
+        text.y = 60 * 0.8;
         text.anchor = 0.5;
         this.countTextArr.push(text);
         container.addChild(numBg);
