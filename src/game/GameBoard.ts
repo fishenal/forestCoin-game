@@ -70,6 +70,7 @@ export class GameBoard extends Container {
                 this.renderHead(hid, i - 1, idx);
             });
         }
+
         this.renderBackground();
         this.renderHitArea();
         this.renderVineBlock();
@@ -83,9 +84,6 @@ export class GameBoard extends Container {
         head.y = yy * this.coinWidth + this.gap * (yy + 1);
         head.zIndex = 4;
         this.coinContainer.addChild(head);
-        gsap.from(head, {
-            alpha: 0,
-        });
         return head;
     }
     renderBackground() {
@@ -205,25 +203,14 @@ export class GameBoard extends Container {
             }
         }
     }
-    private swap(head1: Head, head2: Head) {
-        const { xx, yy, x, y, hid } = head1;
-        gsap.to(head1, {
-            xx: head2.xx,
-            yy: head2.yy,
-            x: head2.x,
-            y: head2.y,
-            hid: head2.hid,
-            duration: 0.2,
-        });
 
-        gsap.to(head2, {
-            xx,
-            yy,
-            x,
-            y,
-            hid,
-            duration: 0.2,
-        });
+    // private logCurrentHead = (item) => {
+    //     console.log(`hid: ${item.hid},xx:${item.xx}, yy:${item.yy}`);
+    // };
+    private swap(head1: Head, head2: Head) {
+        const { hid } = head1;
+        head1.updateHead({ hid: head2.hid });
+        head2.updateHead({ hid });
     }
 
     private handleHeadClick(clickHead: Head) {

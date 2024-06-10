@@ -90,14 +90,6 @@ class GameScreen extends Container {
         // this.x = w / 4;
         // this.y = 20;
     }
-    // update(timer) {
-    // countdownline.update(timer);
-    //this.width
-    // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
-    // console.log('🚀 ~ GameScreen ~ update ~ this.game.worklineContainer:', this.game.worklineContainer);
-    // this.addChild(this.game.worklineContainer);
-    // this.game.worklineContainer.show();
-    // }
 }
 
 export default GameScreen;
