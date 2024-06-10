@@ -1,4 +1,4 @@
-import { Container, Graphics, Text } from 'pixi.js';
+import { Container, Graphics, Sprite, Text } from 'pixi.js';
 import { designConfig } from '../utils/designConfig';
 import { Stars } from '../components/Stars';
 import { FancyButton } from '@pixi/ui';
@@ -7,6 +7,7 @@ import GameScreen from '../screen/GameScreen';
 import { buttonAnimation } from '../utils/buttonAnimation';
 import { sfx } from '../utils/audio';
 import { setup } from './Setup';
+import { gameRecord } from './GameRecord';
 
 const innerWidth = designConfig.sixContent.width;
 
@@ -14,9 +15,11 @@ export class Level extends Container {
     private levelNum: number; // from 1
     private lightenNum: number;
     private gap: number;
-    constructor(level: number, lightenNum: number) {
+    private lock: boolean;
+    constructor(level: number, lightenNum: number, lock: boolean) {
         super();
         const width = innerWidth / 3;
+        this.lock = lock;
         this.levelNum = level + 1;
         this.lightenNum = lightenNum;
         this.gap = 30;
@@ -41,26 +44,41 @@ export class Level extends Container {
             color: darkColor,
         });
         container.addChild(button);
-        container.addChild(stars);
-        return container;
-    }
-    show() {
-        const color = 0xc97d70;
-        const hoverColor = 0xdcaa4f;
-        const darkColor = 0x301f23;
-
-        const button = new FancyButton({
-            defaultView: this.getButtonView(color),
-            hoverView: this.getButtonView(hoverColor),
-            pressedView: this.getButtonView(color),
-            text: new Text({
+        if (this.lock) {
+            const icon = Sprite.from('Icon_Lock');
+            icon.width = 60;
+            icon.height = 70;
+            icon.x = width * 0.5;
+            icon.y = height * 0.5 + 15;
+            icon.anchor = 0.5;
+            container.addChild(icon);
+        } else {
+            const darkColor = 0x301f23;
+            const levelNum = new Text({
                 text: String(this.levelNum),
                 style: {
                     fontFamily: 'CherrySwashB',
                     fill: darkColor,
                     fontSize: 60,
                 },
-            }),
+            });
+            levelNum.x = width * 0.5;
+            levelNum.y = height * 0.5 + 10;
+            levelNum.anchor = 0.5;
+            container.addChild(levelNum);
+        }
+
+        container.addChild(stars);
+        return container;
+    }
+    show() {
+        const color = 0xc97d70;
+        const hoverColor = 0xdcaa4f;
+
+        const button = new FancyButton({
+            defaultView: this.getButtonView(color),
+            hoverView: this.getButtonView(hoverColor),
+            pressedView: this.getButtonView(color),
             padding: 15,
             offset: {
                 default: { y: 0 },
@@ -73,11 +91,17 @@ export class Level extends Container {
 
             ...buttonAnimation,
         });
+
         button.x = this.gap;
         button.y = this.gap;
-        button.onPress.connect(() => {
-            this.handleOnPress();
-        });
+        if (this.lock) {
+            button.interactive = false;
+        } else {
+            button.onPress.connect(() => {
+                this.handleOnPress();
+            });
+        }
+
         this.addChild(button);
         // const width = innerWidth / 3;
         // const gap = 30;
@@ -130,8 +154,9 @@ export class LevelBoard extends Container {
         });
         this.addChild(board);
 
-        for (let i = 0; i < 6; i++) {
-            const level = new Level(i, 1);
+        for (let i = 0; i < setup.levelCount; i++) {
+            const levelRecord = gameRecord.gameData.levels;
+            const level = new Level(i, levelRecord[i].star, levelRecord[i].lock);
             level.y = Math.floor(i / 3) * 150;
             level.x = (i % 3) * 190;
             this.addChild(level);

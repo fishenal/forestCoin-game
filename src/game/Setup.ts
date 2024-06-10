@@ -13,6 +13,7 @@ interface Config {
 }
 
 export class Setup {
+    public levelCount: number = 6;
     private levelData: {
         [key: number]: Config;
     } = {
