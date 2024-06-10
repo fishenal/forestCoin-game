@@ -9,8 +9,8 @@ interface ButtonItem {
     spriteName: string;
     action: () => void;
 }
-export class FailPopup extends Container {
-    public static SCREEN_ID = 'failPopup';
+export class SettingPopup extends Container {
+    public static SCREEN_ID = 'settingPopup';
     public _width!: number;
     public _height!: number;
     private container: Graphics;

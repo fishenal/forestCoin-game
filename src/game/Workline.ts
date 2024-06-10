@@ -5,6 +5,9 @@ import { gameBoard } from './GameBoard';
 import { PlaceHolder } from '../components/PlaceHolder';
 import { sfx } from '../utils/audio';
 import { setup } from './Setup';
+import { FailPopup } from './FailPopup';
+import { navigation } from '../navigation';
+import { gameStatus } from './GameStatus';
 
 export class Workline extends Container {
     private limitNum!: number;
@@ -112,7 +115,6 @@ export class Workline extends Container {
         head.eventMode = 'none';
         head.x = this.size * xx + this.gap * (xx + 1) + this.size / 2;
         head.y = this.gap + this.size / 2;
-        head.anchor = 0.5;
         // head.alpha = 0;
         // head.rotation = 12;
         head.on('pointerdown', () => {
@@ -204,6 +206,10 @@ export class Workline extends Container {
 
         if (count === 2) {
             this.removeHead(hid, 3);
+        }
+        if (this.headContainer.children.length >= this.limitNum) {
+            gameStatus.setStatus('end');
+            navigation.showOverlay(FailPopup);
         }
     }
 }

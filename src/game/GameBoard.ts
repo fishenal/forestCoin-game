@@ -8,6 +8,7 @@ import { navigation } from '../navigation';
 import { WinPopup } from './WinPopup';
 import { bgm, sfx } from '../utils/audio';
 import { setup } from './Setup';
+import { gameStatus } from './GameStatus';
 
 export class GameBoard extends Container {
     public row!: number;
@@ -214,6 +215,9 @@ export class GameBoard extends Container {
     }
 
     private handleHeadClick(clickHead: Head) {
+        if (gameStatus.status !== 'normal') {
+            return;
+        }
         sfx.play('audio/collect.mp3');
         if (this.clearBlockMode) {
             this.resetBlocks();
