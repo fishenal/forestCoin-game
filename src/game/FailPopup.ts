@@ -108,7 +108,7 @@ export class FailPopup extends Container {
             // button.width = 60;
             // button.height = 60;
             // button.onPress.connect(item.action);
-            button.x = idx * 180;
+            button.x = idx * 200;
             button.y = this._height * 0.5 * 0.8;
             this.content.addChild(button);
         });

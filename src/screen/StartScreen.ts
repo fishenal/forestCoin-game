@@ -1,8 +1,4 @@
 import { Container, Sprite, Ticker } from 'pixi.js';
-import gsap from 'gsap';
-import { sfx } from '../utils/audio';
-import { navigation } from '../navigation';
-import IndicatorCover from './IndicatorCover';
 import { Background } from '../components/Background';
 import { title } from '../components/Title';
 import { designConfig } from '../utils/designConfig';
@@ -12,7 +8,7 @@ const innerWidth = designConfig.sixContent.width;
 class StartScreen extends Container {
     public static SCREEN_ID = 'startScreen';
     /** An array of bundle IDs for dynamic asset loading. */
-    public static assetBundles = ['imgAssets'];
+    public static assetBundles = ['imgAssets', 'default'];
     private logoContainer: Container;
     private innerContainer: Container;
     private bg: Background;

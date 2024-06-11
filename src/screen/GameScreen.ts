@@ -12,7 +12,7 @@ import { Background } from '../components/Background';
 const innerWidth = designConfig.sixContent.width;
 class GameScreen extends Container {
     public static SCREEN_ID = 'gameScreen';
-    public static assetBundles = ['imgAssets'];
+    public static assetBundles = ['imgAssets', 'default'];
     private innerContainer: Container;
     private settingIcon: SettingIcon;
     private bg: Background;

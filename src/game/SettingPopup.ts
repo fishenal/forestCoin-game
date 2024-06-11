@@ -82,7 +82,7 @@ export class SettingPopup extends Container {
                 console.log('on press');
             },
         });
-        voiceButton.x = 150;
+        voiceButton.x = 200;
         this.content.addChild(voiceButton);
         // const star = new Stars(2, 60);
         // star.show();

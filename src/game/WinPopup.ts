@@ -110,7 +110,7 @@ export class WinPopup extends Container {
                 onPress: item.action,
                 icon: Sprite.from(item.spriteName),
             });
-            button.x = idx * 150;
+            button.x = idx * 200;
             button.y = this._height * 0.5 * 0.8;
             this.content.addChild(button);
         });
