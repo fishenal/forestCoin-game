@@ -61,7 +61,7 @@ export class Countdownline extends Container {
         // this.plate.roundRect(0, 0, innerWidth, height);
         // this.plate.fill(0xd3d3d3);
         // this.plate.alpha = 0.6;
-
+        this.stopCount();
         this.starCount();
     }
     private onCountend() {

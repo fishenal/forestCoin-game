@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { sfx } from '../utils/audio';
 import { navigation } from '../navigation';
 import IndicatorCover from './IndicatorCover';
-import { background } from '../components/Background';
+import { Background } from '../components/Background';
 import { title } from '../components/Title';
 import { designConfig } from '../utils/designConfig';
 import { levelBoard } from '../game/LevelBoard';
@@ -15,9 +15,11 @@ class StartScreen extends Container {
     public static assetBundles = ['imgAssets'];
     private logoContainer: Container;
     private innerContainer: Container;
+    private bg: Background;
     constructor() {
         super();
-        this.addChild(background);
+        this.bg = new Background();
+        this.addChild(this.bg);
         this.innerContainer = new Container();
         this.innerContainer.x = 100;
         this.innerContainer.y = 0;
@@ -55,21 +57,30 @@ class StartScreen extends Container {
 
     public async show() {
         this.visible = true;
-        await title.show();
-        await background.show();
-        await levelBoard.show();
+        title.show();
+
+        // background.show();
+        levelBoard.show();
     }
-    public async hide() {
-        this.visible = false;
-        // this.logoContainer.visible = false;
-    }
+    // public async hide() {
+    //     this.visible = false;
+    //     // this.logoContainer.visible = false;
+    // }
     public resize(w: number, h: number) {
-        background.resize(w, h);
+        // background.resize(w, h);
         // this.innerContainer.x = 15;
         this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
         this.innerContainer.y = 60;
         this.logoContainer.y = h * 0.85;
         this.logoContainer.x = innerWidth * 0.8;
+        // this.bg.anchor = 0.5;
+        this.bg.resize(w, h);
+        // this.bg.width = w;
+        // this.bg.height = h;
+        // this.bg.pivot.x = w * 0.5;
+        // this.bg.pivot.y = h * 0.5;
+        // this.bg.x = w * 0.5;
+        // this.bg.y = h * 0.5;
     }
 }
 export default StartScreen;

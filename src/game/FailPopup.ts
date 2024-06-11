@@ -1,8 +1,12 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
 import { Stars } from '../components/Stars';
-import { FancyButton } from '@pixi/ui';
-import { buttonAnimation } from '../utils/buttonAnimation';
 import gsap from 'gsap';
+import { sfx } from '../utils/audio';
+import { CircleButton } from '../ui/CircleButton';
+import { navigation } from '../navigation';
+import StartScreen from '../screen/StartScreen';
+import GameScreen from '../screen/GameScreen';
+import { gameStatus } from './GameStatus';
 
 interface ButtonItem {
     name: string;
@@ -19,6 +23,8 @@ export class FailPopup extends Container {
     private buttonArr: ButtonItem[];
     constructor() {
         super();
+        this._width = window.innerWidth;
+        this._height = window.innerHeight;
         this.container = new Graphics();
         this.blackMask = new Graphics();
         this.content = new Container();
@@ -26,7 +32,7 @@ export class FailPopup extends Container {
         this.buttonArr = [
             {
                 name: 'menu',
-                spriteName: 'Icon_ArrowLeft',
+                spriteName: 'Icon_Home',
                 action: this.onBackMenu,
             },
             {
@@ -35,17 +41,25 @@ export class FailPopup extends Container {
                 action: this.onRestart,
             },
         ];
-    }
-    public async show() {
         this.renderBackground();
         this.renderContent();
         this.renderBlackMask();
-        gsap.from(this.container, {
+    }
+    public async show() {
+        gameStatus.setStatus('end');
+        sfx.play('audio/swing.wav');
+        gsap.to(this.container, {
+            y: this._height * 0.5,
+            ease: 'power2.inOut',
+        });
+    }
+    public async hide() {
+        gameStatus.setStatus('normal');
+        gsap.to(this.container, {
             y: -999,
             ease: 'power2.inOut',
         });
     }
-    public async hide() {}
     renderBlackMask() {
         this.blackMask.rect(0, 0, this._width, this._height);
         this.blackMask.fill(0x000000);
@@ -65,7 +79,7 @@ export class FailPopup extends Container {
         //     color: 0x301f23,
         // });
         this.container.x = this._width * 0.5;
-        this.container.y = this._height * 0.5;
+        // this.container.y = this._height * 0.5;
         this.container.pivot.x = this._width * 0.5 * 0.5;
         this.container.pivot.y = this._height * 0.5 * 0.5;
         this.container.zIndex = 2;
@@ -86,29 +100,33 @@ export class FailPopup extends Container {
         this.content.addChild(icon);
 
         this.buttonArr.forEach((item, idx) => {
-            const button = new FancyButton({
-                defaultView: Sprite.from(item.spriteName),
-                ...buttonAnimation,
+            const button = new CircleButton({
+                size: 40,
+                onPress: item.action,
+                icon: Sprite.from(item.spriteName),
             });
-            button.width = 60;
-            button.height = 60;
-            button.onPress.connect(item.action);
-            button.x = idx * 150;
+            // button.width = 60;
+            // button.height = 60;
+            // button.onPress.connect(item.action);
+            button.x = idx * 180;
             button.y = this._height * 0.5 * 0.8;
             this.content.addChild(button);
         });
         // this.content.width = this._width * 0.5 * 0.5;
         this.content.x = this._width * 0.5 * 0.5;
         this.content.pivot.x = this.content.width * 0.5;
-
+        this.content.y = this._height * 0.5;
+        this.content.pivot.y = this._height * 0.5;
         this.container.addChild(this.content);
     }
 
     onBackMenu() {
-        console.log('on back menu click');
+        navigation.hideOverlay();
+        navigation.goToScreen(StartScreen);
     }
     onRestart() {
-        console.log('on restart click');
+        navigation.hideOverlay();
+        navigation.goToScreen(GameScreen);
     }
     resize(w: number, h: number) {
         this._width = w;

@@ -60,6 +60,7 @@ export class GameBoard extends Container {
         this.addChild(this.coinContainer);
     }
     public show() {
+        this.removeChildren();
         this.init();
         for (let i = 1; i <= this.col; i++) {
             const colArr: number[] = [];

@@ -56,6 +56,7 @@ export class Toolbarline extends Container {
         this.countTextArr = [];
     }
     public show() {
+        this.removeChildren();
         this.init();
         // this.plate.roundRect(0, 0, width, height);
         // this.plate.fill(0xd6ad98);

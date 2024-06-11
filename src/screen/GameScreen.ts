@@ -1,12 +1,13 @@
 import { Container } from 'pixi.js';
 import { workLine } from '../game/Workline';
 import { gameBoard } from '../game/GameBoard';
-import { background } from '../components/Background';
+// import { background } from '../components/Background';
 import { designConfig } from '../utils/designConfig';
 import { countdownline } from '../game/Countdownline';
 import { toolbarline } from '../game/Toolbarline';
 import { bgm } from '../utils/audio';
 import { SettingIcon } from '../components/SettingIcon';
+import { Background } from '../components/Background';
 
 const innerWidth = designConfig.sixContent.width;
 class GameScreen extends Container {
@@ -14,8 +15,12 @@ class GameScreen extends Container {
     public static assetBundles = ['imgAssets'];
     private innerContainer: Container;
     private settingIcon: SettingIcon;
+    private bg: Background;
     constructor() {
         super();
+
+        this.bg = new Background();
+        this.addChild(this.bg);
         this.innerContainer = new Container();
         this.innerContainer.width = innerWidth;
         // this.gold = gold;
@@ -43,7 +48,7 @@ class GameScreen extends Container {
         this.innerContainer.addChild(this.settingIcon);
 
         // this.innerContainer.addChild(tool);
-        this.addChild(background);
+
         // this.addChild(failPopup);
         this.addChild(this.innerContainer);
 
@@ -52,8 +57,10 @@ class GameScreen extends Container {
     public async show() {
         await gameBoard.show();
         await workLine.show();
+        // const background = new Background();
+        // this.addChild(background);
         // tool.show();
-        await background.show();
+        // await background.show();
         await countdownline.show();
         await toolbarline.show();
 
@@ -64,6 +71,7 @@ class GameScreen extends Container {
         // this.innerContainer.y = 20;
     }
 
+    public async hide() {}
     // private handleHeadClick(hid: number) {
     //     // console.log('🚀 ~ GameScreen ~ handleHeadClick ~ cidx:', cidx);
     //     this.workLine.addHid(hid);
@@ -73,7 +81,7 @@ class GameScreen extends Container {
     //     // this.showWorkline();
     // }
     resize(w: number, h: number) {
-        background.resize(w, h);
+        this.bg.resize(w, h);
         this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
         this.innerContainer.y = 20;
         // console.log('🚀 ~ GameScreen ~ resize ~ w:', w);

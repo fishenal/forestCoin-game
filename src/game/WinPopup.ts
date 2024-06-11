@@ -47,7 +47,9 @@ export class WinPopup extends Container {
             ease: 'power2.inOut',
         });
     }
-    public async hide() {}
+    public async hide() {
+        this.removeChildren();
+    }
     renderBlackMask() {
         this.blackMask.rect(0, 0, this._width, this._height);
         this.blackMask.fill(0x000000);

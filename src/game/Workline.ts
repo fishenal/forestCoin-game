@@ -50,6 +50,7 @@ export class Workline extends Container {
     }
 
     public show() {
+        this.removeChildren();
         this.init();
         this.plate.roundRect(0, 0, this.innerWidth, this.size + this.gap * 2);
         this.plate.fill(0x69a5c9);
@@ -164,6 +165,7 @@ export class Workline extends Container {
                     duration: 0.2,
                     onComplete: () => {
                         this.headContainer.removeChild(item);
+                        this.gameOverCheck();
                     },
                 });
                 afterRemove = true;
@@ -181,6 +183,11 @@ export class Workline extends Container {
                 });
             }
         });
+    }
+    private gameOverCheck() {
+        if (this.headContainer.children.length >= this.limitNum) {
+            navigation.showOverlay(FailPopup);
+        }
     }
     public async addHid(hid: number) {
         let count = 0;
@@ -206,10 +213,8 @@ export class Workline extends Container {
 
         if (count === 2) {
             this.removeHead(hid, 3);
-        }
-        if (this.headContainer.children.length >= this.limitNum) {
-            gameStatus.setStatus('end');
-            navigation.showOverlay(FailPopup);
+        } else {
+            this.gameOverCheck();
         }
     }
 }

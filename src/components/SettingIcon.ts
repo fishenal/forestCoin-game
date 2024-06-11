@@ -2,7 +2,7 @@ import { Container, Graphics, Sprite } from 'pixi.js';
 import { FancyButton } from '@pixi/ui';
 import { buttonAnimation } from '../utils/buttonAnimation';
 import { navigation } from '../navigation';
-import StartScreen from '../screen/StartScreen';
+import { SettingPopup } from '../game/SettingPopup';
 
 const width = 60;
 const height = 60;
@@ -42,7 +42,6 @@ export class SettingIcon extends Container {
     }
 
     private onSettingClick() {
-        console.log('shuffle');
-        navigation.goToScreen(StartScreen);
+        navigation.showOverlay(SettingPopup);
     }
 }
