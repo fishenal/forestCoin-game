@@ -1,5 +1,3 @@
-import { designConfig } from '../utils/designConfig';
-
 interface Config {
     coinWidth: number;
     innerWidth: number;
@@ -14,6 +12,7 @@ interface Config {
 
 export class Setup {
     public levelCount: number = 6;
+    public currentLevel: number = 1;
     private levelData: {
         [key: number]: Config;
     } = {
@@ -74,9 +73,8 @@ export class Setup {
         },
     };
 
-    public level: number = 2;
     public getConfigData = (): Config => {
-        return this.levelData[this.level];
+        return this.levelData[this.currentLevel];
     };
 }
 

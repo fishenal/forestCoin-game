@@ -131,7 +131,7 @@ export class Level extends Container {
     }
     handleOnPress() {
         sfx.play('audio/click.mp3');
-        setup.level = this.levelNum;
+        setup.currentLevel = this.levelNum;
         navigation.goToScreen(GameScreen);
     }
 }

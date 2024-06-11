@@ -1,9 +1,14 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
 import { Stars } from '../components/Stars';
-import { FancyButton } from '@pixi/ui';
-import { buttonAnimation } from '../utils/buttonAnimation';
 import gsap from 'gsap';
-import { bgm } from '../utils/audio';
+import { bgm, sfx } from '../utils/audio';
+import { gameStatus } from './GameStatus';
+import { navigation } from '../navigation';
+import StartScreen from '../screen/StartScreen';
+import GameScreen from '../screen/GameScreen';
+import { setup } from './Setup';
+import { gameRecord } from './GameRecord';
+import { CircleButton } from '../ui/CircleButton';
 
 interface ButtonItem {
     name: string;
@@ -20,6 +25,8 @@ export class WinPopup extends Container {
     private buttonArr: ButtonItem[];
     constructor() {
         super();
+        this._width = window.innerWidth;
+        this._height = window.innerHeight;
         this.container = new Graphics();
         this.blackMask = new Graphics();
         this.content = new Container();
@@ -27,7 +34,7 @@ export class WinPopup extends Container {
         this.buttonArr = [
             {
                 name: 'menu',
-                spriteName: 'Icon_ArrowLeft',
+                spriteName: 'Icon_Home',
                 action: this.onBackMenu,
             },
             {
@@ -36,19 +43,27 @@ export class WinPopup extends Container {
                 action: this.onNext,
             },
         ];
-    }
-    public async show() {
-        bgm.play('audio/win.wav');
         this.renderBackground();
         this.renderContent();
         this.renderBlackMask();
-        gsap.from(this.container, {
-            y: -999,
+    }
+    public async show() {
+        bgm.play('audio/win.wav');
+        gameStatus.setStatus('end');
+        gameRecord.setGameLevel(setup.currentLevel, 3, false);
+        setup.currentLevel += 1;
+        sfx.play('audio/swing.wav');
+        gsap.to(this.container, {
+            y: this._height * 0.5,
             ease: 'power2.inOut',
         });
     }
     public async hide() {
-        this.removeChildren();
+        gameStatus.setStatus('normal');
+        gsap.to(this.container, {
+            y: -999,
+            ease: 'power2.inOut',
+        });
     }
     renderBlackMask() {
         this.blackMask.rect(0, 0, this._width, this._height);
@@ -69,7 +84,7 @@ export class WinPopup extends Container {
         //     color: 0x301f23,
         // });
         this.container.x = this._width * 0.5;
-        this.container.y = this._height * 0.5;
+        // this.container.y = this._height * 0.5;
         this.container.pivot.x = this._width * 0.5 * 0.5;
         this.container.pivot.y = this._height * 0.5 * 0.5;
         this.container.zIndex = 2;
@@ -90,13 +105,11 @@ export class WinPopup extends Container {
         this.content.addChild(icon);
 
         this.buttonArr.forEach((item, idx) => {
-            const button = new FancyButton({
-                defaultView: Sprite.from(item.spriteName),
-                ...buttonAnimation,
+            const button = new CircleButton({
+                size: 40,
+                onPress: item.action,
+                icon: Sprite.from(item.spriteName),
             });
-            button.width = 60;
-            button.height = 60;
-            button.onPress.connect(item.action);
             button.x = idx * 150;
             button.y = this._height * 0.5 * 0.8;
             this.content.addChild(button);
@@ -104,15 +117,19 @@ export class WinPopup extends Container {
         // this.content.width = this._width * 0.5 * 0.5;
         this.content.x = this._width * 0.5 * 0.5;
         this.content.pivot.x = this.content.width * 0.5;
-
+        this.content.y = this._height * 0.5;
+        this.content.pivot.y = this._height * 0.5;
         this.container.addChild(this.content);
     }
 
     onBackMenu() {
-        console.log('on back menu click');
+        navigation.hideOverlay();
+        navigation.goToScreen(StartScreen);
     }
     onNext() {
-        console.log('on next level click');
+        navigation.hideOverlay();
+
+        navigation.goToScreen(GameScreen);
     }
     resize(w: number, h: number) {
         this._width = w;
