@@ -9,6 +9,9 @@ import GameScreen from '../screen/GameScreen';
 import { setup } from './Setup';
 import { gameRecord } from './GameRecord';
 import { CircleButton } from '../ui/CircleButton';
+import { emitter } from '../store/emitter';
+import { countdownline } from './Countdownline';
+import { toolbarline } from './Toolbarline';
 
 interface ButtonItem {
     name: string;
@@ -23,8 +26,10 @@ export class WinPopup extends Container {
     private blackMask: Graphics;
     private content: Container;
     private buttonArr: ButtonItem[];
+    private star: number;
     constructor() {
         super();
+        this.star = 0;
         this._width = window.innerWidth;
         this._height = window.innerHeight;
         this.container = new Graphics();
@@ -44,14 +49,29 @@ export class WinPopup extends Container {
             },
         ];
         this.renderBackground();
-        this.renderContent();
+        this.container.addChild(this.content);
         this.renderBlackMask();
     }
     public async show() {
+        const { countSec } = setup.getConfigData();
+
+        let star = 3;
+        if (countSec / 2 > countdownline.second) {
+            star -= 1;
+        }
+        if (toolbarline.used) {
+            star -= 1;
+        }
+        countdownline.stopCount();
+        this.star = star;
+
+        emitter.emit('onWin', star);
+        this.content.removeChildren();
+        this.renderContent();
         bgm.play('audio/win.wav');
         gameStatus.setStatus('end');
-        gameRecord.setGameLevel(setup.currentLevel, 3, false);
-        setup.currentLevel += 1;
+        // // gameRecord.setGameLevel(setup.currentLevel, 3, false);
+        // setup.currentLevel += 1;
         sfx.play('audio/swing.wav');
         gsap.to(this.container, {
             y: this._height * 0.5,
@@ -92,7 +112,7 @@ export class WinPopup extends Container {
     }
 
     renderContent() {
-        const star = new Stars(2, 60);
+        const star = new Stars(this.star, 60);
         star.show();
         star.y = 40;
         star.x = 20;
@@ -119,7 +139,6 @@ export class WinPopup extends Container {
         this.content.pivot.x = this.content.width * 0.5;
         this.content.y = this._height * 0.5;
         this.content.pivot.y = this._height * 0.5;
-        this.container.addChild(this.content);
     }
 
     onBackMenu() {
@@ -127,8 +146,8 @@ export class WinPopup extends Container {
         navigation.goToScreen(StartScreen);
     }
     onNext() {
+        setup.currentLevel += 1;
         navigation.hideOverlay();
-
         navigation.goToScreen(GameScreen);
     }
     resize(w: number, h: number) {

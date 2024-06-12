@@ -57,8 +57,8 @@ async function init() {
     // Add pixi canvas element (app.canvas) to the document's body
     document.body.appendChild(app.canvas);
 
-    // const loadScreen = new LoadScreen();
-    // app.stage.addChild(loadScreen);
+    const loadScreen = new LoadScreen();
+    app.stage.addChild(loadScreen);
     navigation.setLoadScreen(LoadScreen);
     // await window.CrazyGames.SDK.game.loadingStart();
     // Setup assets bundles (see assets.ts) and start up loading everything in background
@@ -66,7 +66,7 @@ async function init() {
 
     // await window.CrazyGames.SDK.game.loadingStop();
 
-    // app.stage.removeChild(loadScreen);
+    app.stage.removeChild(loadScreen);
 
     navigation.goToScreen(StartScreen);
     // const gameScreen = new GameScreen();

@@ -1,3 +1,4 @@
+import { emitter } from '../store/emitter';
 import { setup } from './Setup';
 
 interface GameData {
@@ -21,6 +22,9 @@ export class GameRecord {
         } else {
             this.initData();
         }
+        emitter.on('onWin', (star: number) => {
+            this.handleWin(star);
+        });
     }
     private initData() {
         for (let i = 0; i < setup.levelCount; i++) {
@@ -30,6 +34,11 @@ export class GameRecord {
             };
         }
         localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+    }
+    private handleWin(star: number) {
+        if (star > this.gameData.levels[setup.currentLevel].star) {
+            this.setGameLevel(setup.currentLevel, star, false);
+        }
     }
     public setGameLevel(level: keyof GameData['levels'], star: number, lockStatus: boolean = false) {
         this.gameData.levels[level] = {

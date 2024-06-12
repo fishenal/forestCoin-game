@@ -1,22 +1,26 @@
-import { Container, Graphics, Text } from 'pixi.js';
-import { designConfig } from '../utils/designConfig';
+import { Container, Text } from 'pixi.js';
 import { navigation } from '../navigation';
 import { FailPopup } from './FailPopup';
+import { setup } from './Setup';
 import { sfx } from '../utils/audio';
+import { emitter } from '../store/emitter';
 
 const width = 200;
 const height = 30;
-const defaultSec = 200;
+// const defaultSec = 200;
 export class Countdownline extends Container {
-    private second: number;
+    public second: number;
     // private plate: Graphics;
     private intervalId: NodeJS.Timeout | undefined;
     private countDownStr: Text;
     public onThreeRemove: () => void = () => {};
+    private defaultSec: number;
     // public debounceAdd: () => void;
     constructor() {
         super();
-        this.second = defaultSec;
+        const { countSec } = setup.getConfigData();
+        this.defaultSec = countSec;
+        this.second = countSec;
         this.width = width;
         this.height = height;
         this.y = 0;
@@ -34,6 +38,9 @@ export class Countdownline extends Container {
         this.countDownStr.y = 10;
         this.countDownStr.x = 10;
         this.addChild(this.countDownStr);
+        emitter.on('onFail', () => {
+            this.stopCount();
+        });
         // this.plate.alpha = 0.5;
     }
     private getTimeStr() {
@@ -42,30 +49,34 @@ export class Countdownline extends Container {
 
         return `${minutes} : ${seconds < 10 ? '0' : ''}${seconds}`;
     }
-    private starCount() {
+    public starCount() {
         this.intervalId = setInterval(() => {
             this.second -= 1;
+            if (this.second <= 5) {
+                sfx.play('audio/clock_count.mp3');
+            }
             if (this.second <= 0) {
                 this.stopCount();
                 this.onCountend();
             }
             this.countDownStr.text = this.getTimeStr();
-            // sfx.play('audio/clock_count.mp3');
         }, 1000);
     }
-    private stopCount() {
-        this.second = defaultSec;
+    public stopCount() {
         clearInterval(this.intervalId);
+        this.second = this.defaultSec;
     }
+
     public show() {
         // this.plate.roundRect(0, 0, innerWidth, height);
         // this.plate.fill(0xd3d3d3);
         // this.plate.alpha = 0.6;
+        const { countSec } = setup.getConfigData();
+        this.defaultSec = countSec;
         this.stopCount();
         this.starCount();
     }
     private onCountend() {
-        console.log('count end');
         navigation.showOverlay(FailPopup);
     }
 }

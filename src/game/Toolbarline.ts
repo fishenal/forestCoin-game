@@ -14,15 +14,17 @@ interface ToolBarItem {
 export class Toolbarline extends Container {
     // private plate: Graphics;
     private toolArr!: ToolBarItem[];
+    public used: boolean;
     private countTextArr!: Text[];
     // public debounceAdd: () => void;
     constructor() {
         super();
-
+        this.used = false;
         // this.plate = new Graphics();
         // this.addChild(this.plate);
     }
     private init() {
+        this.used = false;
         const { innerWidth, gap } = setup.getConfigData();
         this.width = 60;
         this.y = 0;
@@ -31,7 +33,7 @@ export class Toolbarline extends Container {
             {
                 name: 'magic_click',
                 spriteName: 'Icon_Magic',
-                count: 5,
+                count: 1,
                 action: () => {
                     this.onMagicClick();
                 },
@@ -39,7 +41,7 @@ export class Toolbarline extends Container {
             {
                 name: 'return_back',
                 spriteName: 'Icon_Return',
-                count: 5,
+                count: 1,
                 action: () => {
                     this.onReturnBack();
                 },
@@ -47,7 +49,7 @@ export class Toolbarline extends Container {
             {
                 name: 'shuffle',
                 spriteName: 'Icon_Helix',
-                count: 5,
+                count: 1,
                 action: () => {
                     this.onShuffle();
                 },
@@ -122,6 +124,7 @@ export class Toolbarline extends Container {
         return button;
     }
     private onMagicClick() {
+        this.used = true;
         const magicTool = this.toolArr.find((item) => item.name === 'magic_click');
 
         if (magicTool && magicTool.count > 0) {
@@ -131,6 +134,7 @@ export class Toolbarline extends Container {
         }
     }
     private onReturnBack() {
+        this.used = true;
         const returnTool = this.toolArr.find((item) => item.name === 'return_back');
 
         if (returnTool && returnTool.count > 0) {
@@ -140,6 +144,7 @@ export class Toolbarline extends Container {
         }
     }
     private onShuffle() {
+        this.used = true;
         const shuffleTool = this.toolArr.find((item) => item.name === 'shuffle');
 
         if (shuffleTool && shuffleTool.count > 0) {

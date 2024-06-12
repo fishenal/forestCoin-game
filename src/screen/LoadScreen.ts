@@ -7,8 +7,8 @@ class LoadScreen extends Container {
     constructor() {
         super();
         this.progressBar = new ProgressBar({
-            bg: new Graphics().roundRect(0, 0, 300, 30).fill(0xfd6f90),
-            fill: new Graphics().roundRect(0, 0, 300, 30).fill(0x84d0ff),
+            bg: new Graphics().roundRect(0, 0, 300, 30).fill(0x301f23),
+            fill: new Graphics().roundRect(0, 0, 300, 30).fill(0x69a5c9),
             progress: 50,
         });
         this.progressBar.x = window.innerWidth / 2 - 300 / 2;

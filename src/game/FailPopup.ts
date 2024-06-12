@@ -7,6 +7,7 @@ import { navigation } from '../navigation';
 import StartScreen from '../screen/StartScreen';
 import GameScreen from '../screen/GameScreen';
 import { gameStatus } from './GameStatus';
+import { emitter } from '../store/emitter';
 
 interface ButtonItem {
     name: string;
@@ -46,6 +47,7 @@ export class FailPopup extends Container {
         this.renderBlackMask();
     }
     public async show() {
+        emitter.emit('onFail');
         gameStatus.setStatus('end');
         sfx.play('audio/swing.wav');
         gsap.to(this.container, {
@@ -87,7 +89,7 @@ export class FailPopup extends Container {
     }
 
     renderContent() {
-        const star = new Stars(2, 60);
+        const star = new Stars(0, 60);
         star.show();
         star.y = 40;
         star.x = 20;

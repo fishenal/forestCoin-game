@@ -6,7 +6,7 @@ interface Config {
     col: number;
     hitLine: number;
     blockLine: number;
-    countSec?: number;
+    countSec: number;
     toolNum?: number[];
 }
 
@@ -24,7 +24,7 @@ export class Setup {
             col: 6,
             hitLine: 3,
             blockLine: 0,
-            // countSec:
+            countSec: 60,
         },
         2: {
             coinWidth: 60,
@@ -34,6 +34,7 @@ export class Setup {
             col: 9,
             hitLine: 3,
             blockLine: 0,
+            countSec: 100,
         },
         3: {
             coinWidth: 90,
@@ -43,6 +44,7 @@ export class Setup {
             col: 6,
             hitLine: 1,
             blockLine: 0,
+            countSec: 100,
         },
         4: {
             coinWidth: 90,
@@ -52,6 +54,7 @@ export class Setup {
             col: 6,
             hitLine: 1,
             blockLine: 2,
+            countSec: 100,
         },
         5: {
             coinWidth: 60,
@@ -61,6 +64,7 @@ export class Setup {
             col: 9,
             hitLine: 1,
             blockLine: 4,
+            countSec: 100,
         },
         6: {
             coinWidth: 60,
@@ -70,6 +74,7 @@ export class Setup {
             col: 9,
             hitLine: 1,
             blockLine: 7,
+            countSec: 100,
         },
     };
 

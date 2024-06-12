@@ -67,7 +67,7 @@ class StartScreen extends Container {
         // this.innerContainer.x = 15;
         this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
         this.innerContainer.y = 60;
-        this.logoContainer.y = h * 0.85;
+        this.logoContainer.y = h * 0.88;
         this.logoContainer.x = innerWidth * 0.8;
         // this.bg.anchor = 0.5;
         this.bg.resize(w, h);
