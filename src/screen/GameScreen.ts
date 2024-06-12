@@ -8,6 +8,7 @@ import { toolbarline } from '../game/Toolbarline';
 import { bgm } from '../utils/audio';
 import { SettingIcon } from '../components/SettingIcon';
 import { Background } from '../components/Background';
+import { setup } from '../game/Setup';
 
 const innerWidth = designConfig.sixContent.width;
 class GameScreen extends Container {
@@ -43,8 +44,7 @@ class GameScreen extends Container {
         this.innerContainer.addChild(countdownline);
         this.innerContainer.addChild(toolbarline);
         this.settingIcon = new SettingIcon();
-        this.settingIcon.x = 610;
-        this.settingIcon.y = 680;
+
         this.innerContainer.addChild(this.settingIcon);
 
         // this.innerContainer.addChild(tool);
@@ -64,8 +64,11 @@ class GameScreen extends Container {
         await countdownline.show();
         await toolbarline.show();
 
-        this.settingIcon.show();
+        // this.settingIcon.show();
         bgm.play('audio/bird_bg.wav');
+        const { innerWidth } = setup.getConfigData();
+        this.settingIcon.x = innerWidth + 40;
+        this.settingIcon.y = innerWidth * 1.2;
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
         // this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
         // this.innerContainer.y = 20;

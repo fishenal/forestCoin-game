@@ -18,8 +18,8 @@ export class CircleButton extends Container {
         this.icon = icon;
         const spr = this.icon;
         spr.anchor = 0.5;
-        spr.width = size * 0.6;
-        spr.height = size * 0.6;
+        spr.width = size * 0.8;
+        spr.height = size * 0.8;
         spr.x = size * 0.5;
         spr.y = size * 0.5;
         container.addChild(spr);
