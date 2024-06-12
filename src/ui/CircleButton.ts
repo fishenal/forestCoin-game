@@ -3,6 +3,7 @@ import { Container, Graphics, Sprite } from 'pixi.js';
 import { buttonAnimation } from '../utils/buttonAnimation';
 
 export class CircleButton extends Container {
+    public icon: Sprite;
     constructor({ size, icon, onPress }: { size: number; icon: Sprite; onPress: () => void }) {
         super();
         const container = new Container();
@@ -14,8 +15,8 @@ export class CircleButton extends Container {
         bg.x = size * 0.5;
         bg.y = size * 0.5;
         container.addChild(bg);
-
-        const spr = icon;
+        this.icon = icon;
+        const spr = this.icon;
         spr.anchor = 0.5;
         spr.width = size * 0.6;
         spr.height = size * 0.6;

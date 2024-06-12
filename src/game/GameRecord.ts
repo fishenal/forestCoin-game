@@ -1,7 +1,10 @@
 import { emitter } from '../store/emitter';
+import { bgm, sfx } from '../utils/audio';
 import { setup } from './Setup';
 
 interface GameData {
+    sound: boolean;
+    music: boolean;
     levels: {
         [level: number]: {
             star: number;
@@ -15,6 +18,8 @@ export class GameRecord {
     public gameData: GameData;
     constructor() {
         this.gameData = {
+            sound: true,
+            music: true,
             levels: {},
         };
         if (localStorage.getItem(gameDataKey) !== null) {
@@ -22,9 +27,22 @@ export class GameRecord {
         } else {
             this.initData();
         }
+        this.initSound();
         emitter.on('onWin', (star: number) => {
             this.handleWin(star);
         });
+    }
+    private initSound() {
+        if (this.gameData.sound) {
+            sfx.setVolume(1);
+        } else {
+            sfx.setVolume(0);
+        }
+        if (this.gameData.music) {
+            bgm.setVolume(1);
+        } else {
+            bgm.setVolume(0);
+        }
     }
     private initData() {
         for (let i = 1; i <= setup.levelCount; i++) {
@@ -50,6 +68,25 @@ export class GameRecord {
             star,
             lock: lockStatus,
         };
+        localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+    }
+
+    public toggleSound() {
+        this.gameData.sound = !this.gameData.sound;
+        if (this.gameData.sound) {
+            sfx.setVolume(1);
+        } else {
+            sfx.setVolume(0);
+        }
+        localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+    }
+    public toggleMusic() {
+        this.gameData.music = !this.gameData.music;
+        if (this.gameData.music) {
+            bgm.setVolume(1);
+        } else {
+            bgm.setVolume(0);
+        }
         localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
     }
 }

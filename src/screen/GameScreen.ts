@@ -65,7 +65,7 @@ class GameScreen extends Container {
         await toolbarline.show();
 
         this.settingIcon.show();
-        // bgm.play('audio/bird_bg.wav');
+        bgm.play('audio/bird_bg.wav');
         // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
         // this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
         // this.innerContainer.y = 20;

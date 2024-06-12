@@ -1,9 +1,10 @@
-import { Container, Graphics, Sprite } from 'pixi.js';
+import { Container, Graphics, Sprite, Texture } from 'pixi.js';
 import gsap from 'gsap';
 import { CircleButton } from '../ui/CircleButton';
 import { navigation } from '../navigation';
 import StartScreen from '../screen/StartScreen';
 import { sfx } from '../utils/audio';
+import { gameRecord } from './GameRecord';
 
 export class SettingPopup extends Container {
     public static SCREEN_ID = 'settingPopup';
@@ -12,6 +13,8 @@ export class SettingPopup extends Container {
     private container: Graphics;
     private blackMask: Graphics;
     private content: Container;
+    private soundButton!: CircleButton;
+    private musicButton!: CircleButton;
     constructor() {
         super();
         this._width = window.innerWidth;
@@ -46,6 +49,10 @@ export class SettingPopup extends Container {
         this.blackMask.y = 0;
 
         this.blackMask.zIndex = 1;
+        this.blackMask.eventMode = 'static';
+        this.blackMask.on('pointerdown', () => {
+            navigation.hideOverlay();
+        });
         this.addChild(this.blackMask);
     }
 
@@ -75,15 +82,33 @@ export class SettingPopup extends Container {
         });
         buttonHome.x = 0;
         this.content.addChild(buttonHome);
-        const voiceButton = new CircleButton({
+        const soundIcon = gameRecord.gameData.sound ? Sprite.from('Icon_SoundOff') : Sprite.from('Icon_SoundOn');
+        this.soundButton = new CircleButton({
             size: 40,
-            icon: Sprite.from('Icon_SoundOff'),
+            icon: soundIcon,
             onPress: () => {
-                console.log('on press');
+                gameRecord.toggleSound();
+                this.soundButton.icon.texture = gameRecord.gameData.sound
+                    ? Texture.from('Icon_SoundOff')
+                    : Texture.from('Icon_SoundOn');
             },
         });
-        voiceButton.x = 200;
-        this.content.addChild(voiceButton);
+        this.soundButton.x = 100;
+        this.content.addChild(this.soundButton);
+
+        const musicIcon = gameRecord.gameData.music ? Sprite.from('Icon_MusicOff') : Sprite.from('Icon_MusicOn');
+        this.musicButton = new CircleButton({
+            size: 40,
+            icon: musicIcon,
+            onPress: () => {
+                gameRecord.toggleMusic();
+                this.musicButton.icon.texture = gameRecord.gameData.music
+                    ? Texture.from('Icon_MusicOff')
+                    : Texture.from('Icon_MusicOn');
+            },
+        });
+        this.musicButton.x = 200;
+        this.content.addChild(this.musicButton);
         // const star = new Stars(2, 60);
         // star.show();
         // star.y = 40;
