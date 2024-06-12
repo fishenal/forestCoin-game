@@ -8,6 +8,7 @@ import { setup } from './Setup';
 import { FailPopup } from './FailPopup';
 import { navigation } from '../navigation';
 import { gameStatus } from './GameStatus';
+import { emitter } from '../store/emitter';
 
 export class Workline extends Container {
     private limitNum!: number;
@@ -15,7 +16,7 @@ export class Workline extends Container {
     private headContainer!: Container<Head>;
     private placeholderContainer!: Container<PlaceHolder>;
     private plate!: Graphics;
-    private returnMode!: boolean;
+    public returnMode!: boolean;
 
     private innerWidth!: number;
     private gap!: number;
@@ -188,6 +189,7 @@ export class Workline extends Container {
         if (this.headContainer.children.length >= this.limitNum) {
             navigation.showOverlay(FailPopup);
         }
+        emitter.emit('workLineCheck', this.headContainer.children.length);
     }
     public async addHid(hid: number) {
         let count = 0;

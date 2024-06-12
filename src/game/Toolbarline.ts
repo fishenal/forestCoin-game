@@ -4,6 +4,7 @@ import { FancyButton } from '@pixi/ui';
 import { buttonAnimation } from '../utils/buttonAnimation';
 import { workLine } from './Workline';
 import { setup } from './Setup';
+import { emitter } from '../store/emitter';
 
 interface ToolBarItem {
     name: string;
@@ -16,6 +17,7 @@ export class Toolbarline extends Container {
     private toolArr!: ToolBarItem[];
     public used: boolean;
     private countTextArr!: Text[];
+    private disableCover!: Graphics;
     // public debounceAdd: () => void;
     constructor() {
         super();
@@ -56,6 +58,42 @@ export class Toolbarline extends Container {
             },
         ];
         this.countTextArr = [];
+        this.disableCover = new Graphics();
+        this.disableCover.circle(0, 0, 30);
+        this.disableCover.fill(0x000000);
+        this.disableCover.alpha = 0.6;
+        this.disableCover.x = 60 * 0.5;
+        this.disableCover.y = 60 * 0.5;
+
+        emitter.on('workLineCheck', (len: number) => {
+            this.handleWorklineChange(len);
+        });
+    }
+    handleWorklineChange(length: number) {
+        if (length > 0) {
+            this.setToolDisable('return_back', true);
+        } else {
+            this.setToolDisable('return_back', false);
+        }
+    }
+
+    private setToolDisable(toolName: string, status: boolean) {
+        let index: number | undefined;
+        this.toolArr.forEach((item, idx) => {
+            if (toolName === item.name) {
+                index = idx;
+            }
+        });
+        if (index) {
+            const tool: FancyButton = this.getChildAt(index);
+            if (status) {
+                tool.defaultView?.removeChild(this.disableCover);
+                tool.eventMode = 'static';
+            } else {
+                tool.defaultView?.addChild(this.disableCover);
+                tool.eventMode = 'none';
+            }
+        }
     }
     public show() {
         this.removeChildren();
@@ -70,6 +108,9 @@ export class Toolbarline extends Container {
             const container = this.renderToolItem(item);
             container.y = idx * 70 + 60;
             container.x = 10;
+            if (item.name === 'return_back') {
+                container?.defaultView?.addChild(this.disableCover);
+            }
             this.addChild(container);
         });
     }
@@ -113,10 +154,14 @@ export class Toolbarline extends Container {
         container.addChild(numBg);
         container.addChild(text);
 
+        // container.addChild(disableCover);
+
         const button = new FancyButton({
             defaultView: container,
             ...buttonAnimation,
         });
+
+        button.eventMode = item.name === 'return_back' ? 'none' : 'static';
         button.onPress.connect(item.action);
         // container.eventMode = 'static';
         // container.cursor = 'pointer';

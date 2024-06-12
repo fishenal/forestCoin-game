@@ -216,6 +216,9 @@ export class GameBoard extends Container {
     }
 
     private handleHeadClick(clickHead: Head) {
+        if (workLine.returnMode) {
+            return;
+        }
         if (gameStatus.status !== 'normal') {
             return;
         }
