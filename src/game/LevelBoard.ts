@@ -20,7 +20,7 @@ export class Level extends Container {
         super();
         const width = innerWidth / 3;
         this.lock = lock;
-        this.levelNum = level + 1;
+        this.levelNum = level;
         this.lightenNum = lightenNum;
         this.gap = 30;
         this.x = 0;
@@ -154,11 +154,11 @@ export class LevelBoard extends Container {
         });
         this.addChild(board);
 
-        for (let i = 0; i < setup.levelCount; i++) {
+        for (let i = 1; i <= setup.levelCount; i++) {
             const levelRecord = gameRecord.gameData.levels;
             const level = new Level(i, levelRecord[i].star, levelRecord[i].lock);
-            level.y = Math.floor(i / 3) * 150;
-            level.x = (i % 3) * 190;
+            level.y = Math.floor((i - 1) / 3) * 150;
+            level.x = ((i - 1) % 3) * 190;
             this.addChild(level);
             level.show();
         }

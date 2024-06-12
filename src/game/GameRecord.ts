@@ -27,10 +27,10 @@ export class GameRecord {
         });
     }
     private initData() {
-        for (let i = 0; i < setup.levelCount; i++) {
+        for (let i = 1; i <= setup.levelCount; i++) {
             this.gameData.levels[i] = {
-                star: 1,
-                lock: i !== 0,
+                star: 0,
+                lock: i !== 1,
             };
         }
         localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
@@ -39,7 +39,12 @@ export class GameRecord {
         if (star > this.gameData.levels[setup.currentLevel].star) {
             this.setGameLevel(setup.currentLevel, star, false);
         }
+        if (this.gameData.levels[setup.currentLevel + 1] && this.gameData.levels[setup.currentLevel + 1].lock) {
+            this.gameData.levels[setup.currentLevel + 1].lock = false;
+            localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+        }
     }
+
     public setGameLevel(level: keyof GameData['levels'], star: number, lockStatus: boolean = false) {
         this.gameData.levels[level] = {
             star,

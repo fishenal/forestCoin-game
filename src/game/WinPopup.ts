@@ -17,6 +17,7 @@ interface ButtonItem {
     name: string;
     spriteName: string;
     action: () => void;
+    isShow: boolean;
 }
 export class WinPopup extends Container {
     public static SCREEN_ID = 'winPopup';
@@ -40,11 +41,13 @@ export class WinPopup extends Container {
             {
                 name: 'menu',
                 spriteName: 'Icon_Home',
+                isShow: true,
                 action: this.onBackMenu,
             },
             {
                 name: 'next',
                 spriteName: 'Icon_ArrowRight',
+                isShow: true,
                 action: this.onNext,
             },
         ];
@@ -53,6 +56,10 @@ export class WinPopup extends Container {
         this.renderBlackMask();
     }
     public async show() {
+        if (setup.currentLevel >= setup.levelCount) {
+            this.buttonArr[1].isShow = false;
+        }
+
         const { countSec } = setup.getConfigData();
 
         let star = 3;
@@ -68,7 +75,7 @@ export class WinPopup extends Container {
         emitter.emit('onWin', star);
         this.content.removeChildren();
         this.renderContent();
-        bgm.play('audio/win.wav');
+        sfx.play('audio/win.wav');
         gameStatus.setStatus('end');
         // // gameRecord.setGameLevel(setup.currentLevel, 3, false);
         // setup.currentLevel += 1;
@@ -125,6 +132,9 @@ export class WinPopup extends Container {
         this.content.addChild(icon);
 
         this.buttonArr.forEach((item, idx) => {
+            if (!item.isShow) {
+                return;
+            }
             const button = new CircleButton({
                 size: 40,
                 onPress: item.action,
@@ -146,6 +156,9 @@ export class WinPopup extends Container {
         navigation.goToScreen(StartScreen);
     }
     onNext() {
+        if (setup.currentLevel >= setup.levelCount) {
+            return;
+        }
         setup.currentLevel += 1;
         navigation.hideOverlay();
         navigation.goToScreen(GameScreen);

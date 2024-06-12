@@ -64,7 +64,7 @@ export class Setup {
             col: 9,
             hitLine: 1,
             blockLine: 4,
-            countSec: 100,
+            countSec: 120,
         },
         6: {
             coinWidth: 60,
@@ -74,7 +74,7 @@ export class Setup {
             col: 9,
             hitLine: 1,
             blockLine: 7,
-            countSec: 100,
+            countSec: 120,
         },
     };
 

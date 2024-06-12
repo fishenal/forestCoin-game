@@ -3,6 +3,7 @@ import { Background } from '../components/Background';
 import { title } from '../components/Title';
 import { designConfig } from '../utils/designConfig';
 import { levelBoard } from '../game/LevelBoard';
+import { countdownline } from '../game/Countdownline';
 
 const innerWidth = designConfig.sixContent.width;
 class StartScreen extends Container {
@@ -54,7 +55,7 @@ class StartScreen extends Container {
     public async show() {
         this.visible = true;
         title.show();
-
+        countdownline.stopCount();
         // background.show();
         levelBoard.show();
     }
