@@ -7,7 +7,7 @@ import { navigation } from '../navigation';
 import StartScreen from '../screen/StartScreen';
 import GameScreen from '../screen/GameScreen';
 import { gameStatus } from './GameStatus';
-import { emitter } from '../store/emitter';
+import { countdownline } from './Countdownline';
 
 interface ButtonItem {
     name: string;
@@ -18,7 +18,7 @@ export class FailPopup extends Container {
     public static SCREEN_ID = 'failPopup';
     public _width!: number;
     public _height!: number;
-    private container: Graphics;
+    private container: Container;
     private blackMask: Graphics;
     private content: Container;
     private buttonArr: ButtonItem[];
@@ -26,7 +26,7 @@ export class FailPopup extends Container {
         super();
         this._width = window.innerWidth;
         this._height = window.innerHeight;
-        this.container = new Graphics();
+        this.container = new Container();
         this.blackMask = new Graphics();
         this.content = new Container();
         this.content.zIndex = 3;
@@ -47,7 +47,7 @@ export class FailPopup extends Container {
         this.renderBlackMask();
     }
     public async show() {
-        emitter.emit('onFail');
+        countdownline.stopCount();
         gameStatus.setStatus('end');
         sfx.play('audio/swing.wav');
         gsap.to(this.container, {

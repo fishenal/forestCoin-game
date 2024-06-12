@@ -22,7 +22,10 @@ class StartScreen extends Container {
         this.innerContainer.y = 0;
         this.innerContainer.width = innerWidth;
 
-        this.innerContainer.addChild(title);
+        const gameTitle = Sprite.from('gameTitle');
+        gameTitle.width = innerWidth;
+        gameTitle.height = innerWidth * 0.23;
+        this.innerContainer.addChild(gameTitle);
         this.innerContainer.addChild(levelBoard);
         this.logoContainer = new Container();
         // this.logoContainer.x = window.innerWidth * 0.85;
@@ -67,8 +70,7 @@ class StartScreen extends Container {
         // background.resize(w, h);
         // this.innerContainer.x = 15;
         this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
-        this.innerContainer.y = 60;
-        this.logoContainer.y = h * 0.88;
+        this.logoContainer.y = h * 0.9;
         this.logoContainer.x = innerWidth * 0.8;
         // this.bg.anchor = 0.5;
         this.bg.resize(w, h);

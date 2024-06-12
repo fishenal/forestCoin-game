@@ -140,7 +140,7 @@ export class LevelBoard extends Container {
     constructor() {
         super();
         this.x = 0;
-        this.y = 100;
+        this.y = 120;
         this.width = innerWidth;
         this.height = 400;
     }

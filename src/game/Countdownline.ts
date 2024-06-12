@@ -27,15 +27,16 @@ export class Countdownline extends Container {
         this.x = 0;
         // this.plate = new Graphics();
         // this.addChild(this.plate);
-        // @ts-expect-error strokethickness indeed in text style
         this.countDownStr = new Text({
             text: this.getTimeStr(),
             style: {
                 fontFamily: 'CherrySwashB',
                 fill: 0xfdf7f0,
                 dropShadow: true,
-                stroke: 0x301f23,
-                strokeThickness: 3,
+                stroke: {
+                    color: 0x301f23,
+                    width: 3,
+                },
                 fontSize: 40,
             },
         });

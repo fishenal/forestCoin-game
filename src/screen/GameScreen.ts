@@ -86,7 +86,6 @@ class GameScreen extends Container {
     resize(w: number, h: number) {
         this.bg.resize(w, h);
         this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
-        this.innerContainer.y = 20;
         // console.log('🚀 ~ GameScreen ~ resize ~ w:', w);
         // this.width = 400;
         // this.height = h;
