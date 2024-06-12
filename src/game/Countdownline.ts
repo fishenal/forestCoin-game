@@ -27,20 +27,21 @@ export class Countdownline extends Container {
         this.x = 0;
         // this.plate = new Graphics();
         // this.addChild(this.plate);
+        // @ts-expect-error strokethickness indeed in text style
         this.countDownStr = new Text({
             text: this.getTimeStr(),
             style: {
                 fontFamily: 'CherrySwashB',
-                fill: 0xffffff,
+                fill: 0xfdf7f0,
+                dropShadow: true,
+                stroke: 0x301f23,
+                strokeThickness: 3,
                 fontSize: 40,
             },
         });
-        this.countDownStr.y = 10;
+        this.countDownStr.y = 5;
         this.countDownStr.x = 10;
         this.addChild(this.countDownStr);
-        emitter.on('onFail', () => {
-            this.stopCount();
-        });
         // this.plate.alpha = 0.5;
     }
     private getTimeStr() {
@@ -63,8 +64,11 @@ export class Countdownline extends Container {
         }, 1000);
     }
     public stopCount() {
-        clearInterval(this.intervalId);
-        this.second = this.defaultSec;
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+        // this.second = this.defaultSec;
+        // this.countDownStr.text = this.getTimeStr();
     }
 
     public show() {
@@ -73,7 +77,8 @@ export class Countdownline extends Container {
         // this.plate.alpha = 0.6;
         const { countSec } = setup.getConfigData();
         this.defaultSec = countSec;
-        this.stopCount();
+        this.second = countSec;
+        this.countDownStr.text = this.getTimeStr();
         this.starCount();
     }
     private onCountend() {
