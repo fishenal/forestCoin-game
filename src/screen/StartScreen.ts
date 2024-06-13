@@ -1,6 +1,5 @@
-import { Container, Sprite, Ticker } from 'pixi.js';
+import { Container, Sprite } from 'pixi.js';
 import { Background } from '../components/Background';
-import { title } from '../components/Title';
 import { designConfig } from '../utils/designConfig';
 import { levelBoard } from '../game/LevelBoard';
 import { countdownline } from '../game/Countdownline';
@@ -51,13 +50,12 @@ class StartScreen extends Container {
      * Called every frame.
      * @param time - Ticker object with time related data.
      */
-    public update(time: Ticker) {
-        // console.log('on ticker', time);
-    }
+    // public update(time: Ticker) {
+    //     // console.log('on ticker', time);
+    // }
 
     public async show() {
         this.visible = true;
-        title.show();
         countdownline.stopCount();
         // background.show();
         levelBoard.show();

@@ -163,10 +163,10 @@ export class LevelBoard extends Container {
             level.show();
         }
     }
-    resize(w: number, h: number) {
-        // this.width = w;
-        // this.height = h;
-        // this.x = w * 0.5 - this.width * 0.5;
-    }
+    // resize(w: number, h: number) {
+    //     // this.width = w;
+    //     // this.height = h;
+    //     // this.x = w * 0.5 - this.width * 0.5;
+    // }
 }
 export const levelBoard = new LevelBoard();

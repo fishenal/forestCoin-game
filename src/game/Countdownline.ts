@@ -3,7 +3,6 @@ import { navigation } from '../navigation';
 import { FailPopup } from './FailPopup';
 import { setup } from './Setup';
 import { sfx } from '../utils/audio';
-import { emitter } from '../store/emitter';
 
 const width = 200;
 const height = 30;
@@ -14,12 +13,10 @@ export class Countdownline extends Container {
     private intervalId: NodeJS.Timeout | undefined;
     private countDownStr: Text;
     public onThreeRemove: () => void = () => {};
-    private defaultSec: number;
     // public debounceAdd: () => void;
     constructor() {
         super();
         const { countSec } = setup.getConfigData();
-        this.defaultSec = countSec;
         this.second = countSec;
         this.width = width;
         this.height = height;
@@ -77,7 +74,6 @@ export class Countdownline extends Container {
         // this.plate.fill(0xd3d3d3);
         // this.plate.alpha = 0.6;
         const { countSec } = setup.getConfigData();
-        this.defaultSec = countSec;
         this.second = countSec;
         this.countDownStr.text = this.getTimeStr();
         this.starCount();

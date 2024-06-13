@@ -7,7 +7,6 @@ import { sfx } from '../utils/audio';
 import { setup } from './Setup';
 import { FailPopup } from './FailPopup';
 import { navigation } from '../navigation';
-import { gameStatus } from './GameStatus';
 import { emitter } from '../store/emitter';
 
 export class Workline extends Container {

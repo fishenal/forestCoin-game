@@ -16,7 +16,7 @@ declare global {
 
 /** The PixiJS app Application instance, shared across the project */
 export const app = new Application();
-
+// @ts-expect-error for pixi app console
 globalThis.__PIXI_APP__ = app;
 /** Set up a resize function for the app */
 function resize() {

@@ -3,10 +3,9 @@ import { randomItem, randomShuffle } from '../utils/random';
 import { Head } from '../components/Head';
 import { workLine } from './Workline';
 import gsap from 'gsap';
-import { designConfig } from '../utils/designConfig';
 import { navigation } from '../navigation';
 import { WinPopup } from './WinPopup';
-import { bgm, sfx } from '../utils/audio';
+import { sfx } from '../utils/audio';
 import { setup } from './Setup';
 import { gameStatus } from './GameStatus';
 

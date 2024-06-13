@@ -1,13 +1,12 @@
 import { Container, Graphics, Sprite } from 'pixi.js';
 import { Stars } from '../components/Stars';
 import gsap from 'gsap';
-import { bgm, sfx } from '../utils/audio';
+import { sfx } from '../utils/audio';
 import { gameStatus } from './GameStatus';
 import { navigation } from '../navigation';
 import StartScreen from '../screen/StartScreen';
 import GameScreen from '../screen/GameScreen';
 import { setup } from './Setup';
-import { gameRecord } from './GameRecord';
 import { CircleButton } from '../ui/CircleButton';
 import { emitter } from '../store/emitter';
 import { countdownline } from './Countdownline';
