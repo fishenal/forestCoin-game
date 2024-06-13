@@ -158,12 +158,10 @@ export class GameBoard extends Container {
         );
     }
     public resetBlocks() {
+        this.clearBlockMode = false;
+        this.renderHitArea();
         gsap.to(this.blockContainer, {
             alpha: 1,
-            onComplete: () => {
-                this.renderHitArea();
-                this.clearBlockMode = false;
-            },
         });
     }
     public returnToGameboard(hid: number) {
