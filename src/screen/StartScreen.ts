@@ -4,7 +4,7 @@ import { designConfig } from '../utils/designConfig';
 import { levelBoard } from '../game/LevelBoard';
 import { countdownline } from '../game/Countdownline';
 
-const innerWidth = designConfig.sixContent.width;
+const innerWidth = designConfig.content.innerWidth;
 class StartScreen extends Container {
     public static SCREEN_ID = 'startScreen';
     /** An array of bundle IDs for dynamic asset loading. */

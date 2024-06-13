@@ -10,7 +10,7 @@ import { SettingIcon } from '../components/SettingIcon';
 import { Background } from '../components/Background';
 import { setup } from '../game/Setup';
 
-const innerWidth = designConfig.sixContent.width;
+const innerWidth = designConfig.content.innerWidth;
 class GameScreen extends Container {
     public static SCREEN_ID = 'gameScreen';
     public static assetBundles = ['imgAssets', 'default'];

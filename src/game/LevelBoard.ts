@@ -9,7 +9,7 @@ import { sfx } from '../utils/audio';
 import { setup } from './Setup';
 import { gameRecord } from './GameRecord';
 
-const innerWidth = designConfig.sixContent.width;
+const innerWidth = designConfig.content.innerWidth;
 
 export class Level extends Container {
     private levelNum: number; // from 1
@@ -18,6 +18,7 @@ export class Level extends Container {
     private lock: boolean;
     constructor(level: number, lightenNum: number, lock: boolean) {
         super();
+
         const width = innerWidth / 3;
         this.lock = lock;
         this.levelNum = level;
