@@ -22,10 +22,10 @@ export class GameBoard extends Container {
     private coinWidth!: number;
     private innerWidth!: number;
     private gap!: number;
-    // public onHeadClick: (hid: number) => void = () => {};
-    // public onClearCol: () => void = () => {};
+    private lock: boolean;
     constructor() {
         super();
+        this.lock = false;
     }
     private init() {
         const { innerWidth, coinWidth, gap, row, col, hitLine, blockLine } = setup.getConfigData();
@@ -40,7 +40,6 @@ export class GameBoard extends Container {
         this.y = 65;
         this.width = innerWidth;
         this.height = this.row * coinWidth + (this.row + 1) * gap;
-        // this.hitAreaSign = new Graphics();
         this.background = new Graphics();
         this.sortableChildren = true;
         this.clearBlockMode = false;
@@ -48,7 +47,6 @@ export class GameBoard extends Container {
         this.blockContainer.x = 0;
         this.blockContainer.y = 0;
         this.blockContainer.zIndex = 6;
-        // this.blockContainer.x = -9999;
         this.addChild(this.blockContainer);
 
         this.coinContainer = new Container();
@@ -213,6 +211,9 @@ export class GameBoard extends Container {
     }
 
     private handleHeadClick(clickHead: Head) {
+        if (this.lock) {
+            return;
+        }
         if (workLine.returnMode) {
             return;
         }
@@ -224,6 +225,7 @@ export class GameBoard extends Container {
             this.resetBlocks();
         }
         workLine.addHid(clickHead.hid);
+        this.lock = true;
         gsap.to(clickHead, {
             alpha: 0,
             duration: 0.1,
@@ -235,8 +237,9 @@ export class GameBoard extends Container {
                 }
                 this.coinContainer.children.forEach((head: Head) => {
                     if (head.xx === clickHead.xx && head.yy < clickHead.yy) {
+                        const newY = head.y + this.coinWidth + this.gap;
                         gsap.to(head, {
-                            y: head.y + this.coinWidth + this.gap,
+                            y: newY,
                             duration: 0.4,
                             ease: 'bounce.out',
                             onComplete: () => {
@@ -245,6 +248,10 @@ export class GameBoard extends Container {
                         });
                     }
                 });
+                // wait all animation finished
+                setTimeout(() => {
+                    this.lock = false;
+                }, 100);
             },
         });
     }
