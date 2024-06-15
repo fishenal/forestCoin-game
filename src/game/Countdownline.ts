@@ -4,26 +4,18 @@ import { FailPopup } from './FailPopup';
 import { setup } from './Setup';
 import { sfx } from '../utils/audio';
 
-const width = 200;
-const height = 30;
-// const defaultSec = 200;
 export class Countdownline extends Container {
     public second: number;
-    // private plate: Graphics;
     private intervalId: NodeJS.Timeout | undefined;
     private countDownStr: Text;
+    private levelTitle!: Text;
     public onThreeRemove: () => void = () => {};
-    // public debounceAdd: () => void;
     constructor() {
         super();
         const { countSec } = setup.getConfigData();
         this.second = countSec;
-        this.width = width;
-        this.height = height;
-        this.y = 0;
+        this.y = 5;
         this.x = 0;
-        // this.plate = new Graphics();
-        // this.addChild(this.plate);
         this.countDownStr = new Text({
             text: this.getTimeStr(),
             style: {
@@ -37,10 +29,9 @@ export class Countdownline extends Container {
                 fontSize: 40,
             },
         });
-        this.countDownStr.y = 5;
+        // this.countDownStr.y = 5;
         this.countDownStr.x = 10;
         this.addChild(this.countDownStr);
-        // this.plate.alpha = 0.5;
     }
     private getTimeStr() {
         const minutes = Math.floor(this.second / 60);
@@ -68,15 +59,35 @@ export class Countdownline extends Container {
         // this.second = this.defaultSec;
         // this.countDownStr.text = this.getTimeStr();
     }
-
+    renderLevel() {
+        this.removeChild(this.levelTitle);
+        this.levelTitle = new Text({
+            text: `LEVEL: ${setup.currentLevel}`,
+            style: {
+                fontFamily: 'CherrySwashB',
+                fill: 0xfdf7f0,
+                dropShadow: true,
+                stroke: {
+                    color: 0x301f23,
+                    width: 3,
+                },
+                fontSize: 40,
+            },
+        });
+        this.levelTitle.y = 5;
+        this.levelTitle.x = innerWidth * 0.35;
+        this.addChild(this.levelTitle);
+    }
     public show() {
         // this.plate.roundRect(0, 0, innerWidth, height);
         // this.plate.fill(0xd3d3d3);
         // this.plate.alpha = 0.6;
+
         const { countSec } = setup.getConfigData();
         this.second = countSec;
         this.countDownStr.text = this.getTimeStr();
         this.starCount();
+        this.renderLevel();
     }
     private onCountend() {
         navigation.showOverlay(FailPopup, {

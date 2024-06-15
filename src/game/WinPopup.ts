@@ -85,7 +85,6 @@ export class WinPopup extends CommonPopup {
         star.x = 20;
         winPop.addChild(star);
         const icon = Sprite.from('Icon_Crown');
-        icon.anchor = 0.5;
         icon.width = 120;
         icon.height = 120;
         icon.y = 130;

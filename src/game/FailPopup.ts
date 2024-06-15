@@ -60,7 +60,6 @@ export class FailPopup extends CommonPopup {
         const icon = this.type === 'packageLimit' ? Sprite.from('Icon_Skull') : Sprite.from('Icon_Clock');
         icon.width = 120;
         icon.height = 120;
-        icon.anchor = 0.5;
         icon.y = 130;
         icon.x = 60;
         gsap.fromTo(
