@@ -186,7 +186,9 @@ export class Workline extends Container {
     }
     private gameOverCheck() {
         if (this.headContainer.children.length >= this.limitNum) {
-            navigation.showOverlay(FailPopup);
+            navigation.showOverlay(FailPopup, {
+                type: 'packageLimit',
+            });
         }
         emitter.emit('workLineCheck', this.headContainer.children.length);
     }

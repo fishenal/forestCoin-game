@@ -79,7 +79,9 @@ export class Countdownline extends Container {
         this.starCount();
     }
     private onCountend() {
-        navigation.showOverlay(FailPopup);
+        navigation.showOverlay(FailPopup, {
+            type: 'timeout',
+        });
     }
 }
 export const countdownline = new Countdownline();

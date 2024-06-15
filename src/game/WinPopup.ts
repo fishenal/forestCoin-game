@@ -11,7 +11,7 @@ import { emitter } from '../store/emitter';
 import { countdownline } from './Countdownline';
 import { toolbarline } from './Toolbarline';
 import { CommonPopup } from '../ui/CommonPopup';
-
+import gsap from 'gsap';
 interface ButtonItem {
     name: string;
     spriteName: string;
@@ -21,11 +21,12 @@ interface ButtonItem {
 export class WinPopup extends CommonPopup {
     public static SCREEN_ID = 'winPopup';
     private buttonArr: ButtonItem[];
+    private isLastLevel: boolean;
     private star: number;
     constructor() {
         super();
         this.star = 0;
-
+        this.isLastLevel = false;
         this.buttonArr = [
             {
                 name: 'menu',
@@ -40,13 +41,8 @@ export class WinPopup extends CommonPopup {
                 action: this.onNext,
             },
         ];
-        this.renderWinPop();
     }
-    public async show() {
-        if (setup.currentLevel >= setup.levelCount) {
-            this.buttonArr[1].isShow = false;
-        }
-
+    updateStar() {
         const { countSec } = setup.getConfigData();
 
         let star = 3;
@@ -56,12 +52,22 @@ export class WinPopup extends CommonPopup {
         if (toolbarline.used) {
             star -= 1;
         }
-        countdownline.stopCount();
-        this.star = star;
-
         emitter.emit('onWin', star);
+        this.star = star;
+    }
+    public async show() {
+        if (setup.currentLevel >= setup.levelCount) {
+            this.buttonArr[1].isShow = false;
+            this.isLastLevel = true;
+        } else {
+            this.isLastLevel = false;
+            this.buttonArr[1].isShow = true;
+        }
+        this.updateStar();
+        countdownline.stopCount();
         sfx.play('audio/win.wav');
         gameStatus.setStatus('end');
+        this.renderWinPop();
         super.show();
     }
     public async hide() {
@@ -70,6 +76,7 @@ export class WinPopup extends CommonPopup {
     }
 
     renderWinPop() {
+        this.content.removeChildren();
         const winPop = new Container();
 
         const star = new Stars(this.star, 60);
@@ -78,10 +85,28 @@ export class WinPopup extends CommonPopup {
         star.x = 20;
         winPop.addChild(star);
         const icon = Sprite.from('Icon_Crown');
+        icon.anchor = 0.5;
         icon.width = 120;
         icon.height = 120;
         icon.y = 130;
         icon.x = 60;
+        gsap.fromTo(
+            icon,
+            {
+                x: '-=2',
+                yoyo: true,
+                yoyoEase: 'power2',
+                repeat: -1,
+                duration: 0.1,
+            },
+            {
+                x: '+=4',
+                yoyo: true,
+                yoyoEase: 'power2',
+                repeat: -1,
+                duration: 0.1,
+            },
+        );
         winPop.addChild(icon);
 
         this.buttonArr.forEach((item, idx) => {
@@ -93,7 +118,7 @@ export class WinPopup extends CommonPopup {
                 onPress: item.action,
                 icon: Sprite.from(item.spriteName),
             });
-            button.x = idx * 200;
+            button.x = this.isLastLevel ? 100 : idx * 200;
             button.y = 300;
             winPop.addChild(button);
         });
