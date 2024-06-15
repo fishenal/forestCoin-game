@@ -212,12 +212,15 @@ export class GameBoard extends Container {
 
     private handleHeadClick(clickHead: Head) {
         if (this.lock) {
+            console.log('🚀 ~ GameBoard ~ handleHeadClick ~ this.lock:', this.lock);
             return;
         }
         if (workLine.returnMode) {
+            console.log('🚀 ~ GameBoard ~ handleHeadClick ~ workLine.returnMode:', workLine.returnMode);
             return;
         }
         if (gameStatus.status !== 'normal') {
+            console.log('🚀 ~ GameBoard ~ handleHeadClick ~ gameStatus.status:', gameStatus.status);
             return;
         }
         sfx.play('audio/collect.mp3');
@@ -248,12 +251,12 @@ export class GameBoard extends Container {
                         });
                     }
                 });
-                // wait all animation finished
-                setTimeout(() => {
-                    this.lock = false;
-                }, 100);
             },
         });
+        // wait all animation finished
+        setTimeout(() => {
+            this.lock = false;
+        }, 150);
     }
 }
 export const gameBoard = new GameBoard();

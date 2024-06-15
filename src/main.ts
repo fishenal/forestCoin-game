@@ -1,12 +1,9 @@
 import { Application } from 'pixi.js';
-// fimport GameScreen from './screen/GameScreen';
 import LoadScreen from './screen/LoadScreen';
-// import { emitter } from './store/emitter';
 import { navigation } from './navigation';
 import { designConfig } from './utils/designConfig';
 import { initAssets } from './utils/assets';
 import StartScreen from './screen/StartScreen';
-// import StartScreen from './screen/StartScreen';
 
 declare global {
     interface Window {
@@ -57,8 +54,8 @@ async function init() {
     // Add pixi canvas element (app.canvas) to the document's body
     document.body.appendChild(app.canvas);
 
-    const loadScreen = new LoadScreen();
-    app.stage.addChild(loadScreen);
+    // const loadScreen = new LoadScreen();
+    // app.stage.addChild(loadScreen);
     navigation.setLoadScreen(LoadScreen);
     // await window.CrazyGames.SDK.game.loadingStart();
     // Setup assets bundles (see assets.ts) and start up loading everything in background
@@ -66,12 +63,9 @@ async function init() {
 
     // await window.CrazyGames.SDK.game.loadingStop();
 
-    app.stage.removeChild(loadScreen);
+    // app.stage.removeChild(loadScreen);
 
     navigation.goToScreen(StartScreen);
-    // const gameScreen = new GameScreen();
-    // navigation.showOverlay(FailPopup);
-    // app.stage.addChild(gameScreen);
 }
 
 // Init everything

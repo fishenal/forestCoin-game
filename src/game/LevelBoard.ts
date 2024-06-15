@@ -104,31 +104,6 @@ export class Level extends Container {
         }
 
         this.addChild(button);
-        // const width = innerWidth / 3;
-        // const gap = 30;
-        // const board = new Graphics();
-        // board.x = gap;
-        // board.y = gap;
-        // board.roundRect(0, 0, width - 2 * gap, width - 2 * gap);
-        // board.fill(0xc97d70);
-        // board.stroke({
-        //     width: 4,
-        //     color: 0x301f23,
-        // });
-        // this.addChild(board);
-
-        // const text = new Text({
-        //     text: String(this.levelNum + 1),
-        //     style: {
-        //         fontFamily: 'CherrySwashB',
-        //         fill: 0x301f23,
-        //         fontSize: 60,
-        //     },
-        // });
-        // text.anchor = 0.5;
-        // text.x = width / 2;
-        // text.y = width / 2;
-        // this.addChild(text);
     }
     handleOnPress() {
         sfx.play('audio/click.mp3');
@@ -164,10 +139,5 @@ export class LevelBoard extends Container {
             level.show();
         }
     }
-    // resize(w: number, h: number) {
-    //     // this.width = w;
-    //     // this.height = h;
-    //     // this.x = w * 0.5 - this.width * 0.5;
-    // }
 }
 export const levelBoard = new LevelBoard();

@@ -13,17 +13,13 @@ interface ToolBarItem {
     action: () => void;
 }
 export class Toolbarline extends Container {
-    // private plate: Graphics;
     private toolArr!: ToolBarItem[];
     public used: boolean;
     private countTextArr!: Text[];
     private disableCover!: Graphics;
-    // public debounceAdd: () => void;
     constructor() {
         super();
         this.used = false;
-        // this.plate = new Graphics();
-        // this.addChild(this.plate);
     }
     private init() {
         this.used = false;
@@ -98,12 +94,6 @@ export class Toolbarline extends Container {
     public show() {
         this.removeChildren();
         this.init();
-        // this.plate.roundRect(0, 0, width, height);
-        // this.plate.fill(0xd6ad98);
-        // this.plate.stroke({
-        //     width: 2,
-        //     color: 0x301f23,
-        // });
         this.toolArr.forEach((item, idx) => {
             const container = this.renderToolItem(item);
             container.y = idx * 70 + 60;
@@ -163,9 +153,6 @@ export class Toolbarline extends Container {
 
         button.eventMode = item.name === 'return_back' ? 'none' : 'static';
         button.onPress.connect(item.action);
-        // container.eventMode = 'static';
-        // container.cursor = 'pointer';
-        // container.on('pointerdown', item.action);
         return button;
     }
     private onMagicClick() {

@@ -56,8 +56,6 @@ export class Countdownline extends Container {
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
-        // this.second = this.defaultSec;
-        // this.countDownStr.text = this.getTimeStr();
     }
     renderLevel() {
         this.removeChild(this.levelTitle);
@@ -79,10 +77,6 @@ export class Countdownline extends Container {
         this.addChild(this.levelTitle);
     }
     public show() {
-        // this.plate.roundRect(0, 0, innerWidth, height);
-        // this.plate.fill(0xd3d3d3);
-        // this.plate.alpha = 0.6;
-
         const { countSec } = setup.getConfigData();
         this.second = countSec;
         this.countDownStr.text = this.getTimeStr();
