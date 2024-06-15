@@ -1,35 +1,24 @@
-import { Container, Graphics, Sprite } from 'pixi.js';
+import { Container, Sprite } from 'pixi.js';
 import { Stars } from '../components/Stars';
-import gsap from 'gsap';
-import { sfx } from '../utils/audio';
 import { CircleButton } from '../ui/CircleButton';
 import { navigation } from '../navigation';
 import StartScreen from '../screen/StartScreen';
 import GameScreen from '../screen/GameScreen';
 import { gameStatus } from './GameStatus';
 import { countdownline } from './Countdownline';
+import { CommonPopup } from '../ui/CommonPopup';
 
 interface ButtonItem {
     name: string;
     spriteName: string;
     action: () => void;
 }
-export class FailPopup extends Container {
+export class FailPopup extends CommonPopup {
     public static SCREEN_ID = 'failPopup';
-    public _width!: number;
-    public _height!: number;
-    private container: Container;
-    private blackMask: Graphics;
-    private content: Container;
     private buttonArr: ButtonItem[];
     constructor() {
         super();
-        this._width = window.innerWidth;
-        this._height = window.innerHeight;
-        this.container = new Container();
-        this.blackMask = new Graphics();
-        this.content = new Container();
-        this.content.zIndex = 3;
+
         this.buttonArr = [
             {
                 name: 'menu',
@@ -42,64 +31,31 @@ export class FailPopup extends Container {
                 action: this.onRestart,
             },
         ];
-        this.renderBackground();
-        this.renderContent();
-        this.renderBlackMask();
+        this.renderFailPop();
     }
     public async show() {
         countdownline.stopCount();
         gameStatus.setStatus('end');
-        sfx.play('audio/swing.wav');
-        gsap.to(this.container, {
-            y: this._height * 0.5,
-            ease: 'power2.inOut',
-        });
+        super.show();
     }
     public async hide() {
         gameStatus.setStatus('normal');
-        gsap.to(this.container, {
-            y: -999,
-            ease: 'power2.inOut',
-        });
-    }
-    renderBlackMask() {
-        this.blackMask.rect(0, 0, this._width, this._height);
-        this.blackMask.fill(0x000000);
-        this.blackMask.alpha = 0.5;
-        this.blackMask.x = 0;
-        this.blackMask.y = 0;
-
-        this.blackMask.zIndex = 1;
-        this.addChild(this.blackMask);
+        super.hide();
     }
 
-    renderBackground() {
-        // this.container.rect(0, 0, this._width * 0.5, this._height * 0.5);
-        // this.container.fill(0xd6ad98);
-        // this.container.stroke({
-        //     width: 2,
-        //     color: 0x301f23,
-        // });
-        this.container.x = this._width * 0.5;
-        // this.container.y = this._height * 0.5;
-        this.container.pivot.x = this._width * 0.5 * 0.5;
-        this.container.pivot.y = this._height * 0.5 * 0.5;
-        this.container.zIndex = 2;
-        this.addChild(this.container);
-    }
-
-    renderContent() {
+    renderFailPop() {
+        const failPopup = new Container();
         const star = new Stars(0, 60);
         star.show();
         star.y = 40;
         star.x = 20;
-        this.content.addChild(star);
+        failPopup.addChild(star);
         const icon = Sprite.from('Icon_Ghost');
         icon.width = 120;
         icon.height = 120;
         icon.y = 130;
         icon.x = 60;
-        this.content.addChild(icon);
+        failPopup.addChild(icon);
 
         this.buttonArr.forEach((item, idx) => {
             const button = new CircleButton({
@@ -107,19 +63,13 @@ export class FailPopup extends Container {
                 onPress: item.action,
                 icon: Sprite.from(item.spriteName),
             });
-            // button.width = 60;
-            // button.height = 60;
-            // button.onPress.connect(item.action);
             button.x = idx * 200;
-            button.y = this._height * 0.5 * 0.8;
-            this.content.addChild(button);
+            button.y = 300;
+            failPopup.addChild(button);
         });
-        // this.content.width = this._width * 0.5 * 0.5;
-        this.content.x = this._width * 0.5 * 0.5;
-        this.content.pivot.x = this.content.width * 0.5;
-        this.content.y = this._height * 0.5;
-        this.content.pivot.y = this._height * 0.5;
-        this.container.addChild(this.content);
+
+        failPopup.pivot.x = failPopup.width * 0.5;
+        this.content.addChild(failPopup);
     }
 
     onBackMenu() {

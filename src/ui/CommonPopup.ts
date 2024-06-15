@@ -1,55 +1,61 @@
 import { Container, Graphics } from 'pixi.js';
-import { emitter } from '../store/emitter';
 import gsap from 'gsap';
+import { sfx } from '../utils/audio';
 
 export class CommonPopup extends Container {
-    private board: Graphics;
-    private outX: number;
+    public static SCREEN_ID = 'popup';
+    public _width!: number;
+    public _height!: number;
+    private blackMask: Graphics;
+    public content: Container;
+    public onMaskClick?: () => void;
     constructor() {
         super();
-        this.outX = window.innerWidth + 2000;
+        this._width = window.innerWidth;
+        this._height = window.innerHeight;
+        this.blackMask = new Graphics();
+        this.blackMask.zIndex = 1;
+        this.addChild(this.blackMask);
+        this.content = new Container();
+        this.content.zIndex = 3;
+    }
+    public async show() {
+        this.renderBlackMask();
+        this.renderContent();
+        sfx.play('audio/swing.wav');
+        gsap.to(this.content, {
+            y: (this._height / 3) * 0.5,
+            ease: 'power2.inOut',
+        });
+    }
+    public async hide() {
+        gsap.to(this.content, {
+            y: -9999,
+            ease: 'power2.inOut',
+        });
+    }
+    renderBlackMask() {
+        this.blackMask.clear();
+        this.blackMask.rect(0, 0, this._width, this._height);
+        this.blackMask.fill(0x000000);
+        this.blackMask.alpha = 0.5;
+        this.blackMask.x = 0;
+        this.blackMask.y = 0;
+        if (this.onMaskClick) {
+            this.blackMask.eventMode = 'static';
+            this.blackMask.on('pointerdown', this.onMaskClick);
+        }
+    }
 
-        const width = window.innerWidth / 1.2;
-        this.width = width;
-        const height = window.innerHeight / 1.2;
-        this.height = height;
-        this.pivot.x = width / 2;
-        this.pivot.y = height / 2;
-        emitter.on('onResize', ({ width, height }) => {
-            const _width = width / 1.2;
-            this.width = _width;
-            const _height = height / 1.2;
-            this.height = _height;
-            if (this.visible) {
-                this.show();
-            }
-        });
-        this.board = new Graphics();
-        this.board.roundRect(0, 0, width, height, 30);
-        this.board.fill(0xfd6f90);
-        this.board.stroke({ width: 30, color: 0x84d0ff });
-        this.addChild(this.board);
-        this.position.x = this.outX;
-        this.visible = false;
+    renderContent() {
+        this.removeChild(this.content);
+        this.content.x = this._width * 0.5;
+        this.content.zIndex = 2;
+        this.addChild(this.content);
     }
-    public show() {
-        this.visible = true;
-        gsap.to(this, {
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-            duration: 0.5,
-            ease: 'power2.inOut',
-        });
-    }
-    public hide() {
-        gsap.to(this, {
-            x: 3000,
-            duration: 0.5,
-            ease: 'power2.inOut',
-            onComplete: () => {
-                this.visible = false;
-                gsap.killTweensOf(this);
-            },
-        });
+
+    resize(w: number, h: number) {
+        this._width = w;
+        this._height = h;
     }
 }

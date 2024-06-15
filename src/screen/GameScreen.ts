@@ -69,9 +69,6 @@ class GameScreen extends Container {
         const { innerWidth } = setup.getConfigData();
         this.settingIcon.x = innerWidth + 40;
         this.settingIcon.y = innerWidth * 1.2;
-        // console.log('🚀 ~ GameScreen ~ update ~ this.width:', this.width);
-        // this.innerContainer.x = window.innerWidth * 0.5 - this.innerContainer.width * 0.5;
-        // this.innerContainer.y = 20;
     }
 
     public async hide() {}
