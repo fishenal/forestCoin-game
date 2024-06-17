@@ -69,11 +69,11 @@ export class Countdownline extends Container {
                     color: 0x301f23,
                     width: 3,
                 },
-                fontSize: 40,
+                fontSize: 35,
             },
         });
         this.levelTitle.y = 5;
-        this.levelTitle.x = innerWidth * 0.35;
+        this.levelTitle.x = innerWidth * 0.32;
         this.addChild(this.levelTitle);
     }
     public show() {

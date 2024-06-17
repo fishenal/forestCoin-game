@@ -8,6 +8,8 @@ import { bgm } from '../utils/audio';
 import { SettingIcon } from '../components/SettingIcon';
 import { Background } from '../components/Background';
 import { setup } from '../game/Setup';
+import { IndicatorCover } from './IndicatorCover';
+import { navigation } from '../navigation';
 
 const innerWidth = designConfig.content.innerWidth;
 class GameScreen extends Container {
@@ -42,6 +44,8 @@ class GameScreen extends Container {
         const { innerWidth } = setup.getConfigData();
         this.settingIcon.x = innerWidth + 40;
         this.settingIcon.y = innerWidth * 1.2;
+
+        navigation.showOverlay(IndicatorCover);
     }
 
     public async hide() {}

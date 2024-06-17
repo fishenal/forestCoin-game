@@ -8,12 +8,13 @@ import { emitter } from '../store/emitter';
 
 interface ToolBarItem {
     name: string;
+    desc: string;
     spriteName: string;
     count: number;
     action: () => void;
 }
 export class Toolbarline extends Container {
-    private toolArr!: ToolBarItem[];
+    public toolArr!: ToolBarItem[];
     public used: boolean;
     private countTextArr!: Text[];
     private disableCover!: Graphics;
@@ -30,6 +31,7 @@ export class Toolbarline extends Container {
         this.toolArr = [
             {
                 name: 'magic_click',
+                desc: 'Remove all barriers, Recover after 1 pick',
                 spriteName: 'Icon_Magic',
                 count: 1,
                 action: () => {
@@ -38,6 +40,7 @@ export class Toolbarline extends Container {
             },
             {
                 name: 'return_back',
+                desc: 'Return 1 coin back to Board',
                 spriteName: 'Icon_Return',
                 count: 1,
                 action: () => {
@@ -46,6 +49,7 @@ export class Toolbarline extends Container {
             },
             {
                 name: 'shuffle',
+                desc: 'Shuffle Coins on Board',
                 spriteName: 'Icon_Helix',
                 count: 1,
                 action: () => {
