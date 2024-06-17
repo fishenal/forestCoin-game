@@ -76,5 +76,5 @@ export async function initAssets() {
     console.log('🚀 ~ initAssets ~ allBundles:', allBundles);
 
     // Start up background loading of all bundles
-    await Assets.backgroundLoadBundle(allBundles);
+    await loadBundles(allBundles);
 }

@@ -75,7 +75,22 @@ export class GameRecord {
         };
         window.CrazyGames.SDK.data.setItem(gameDataKey, JSON.stringify(this.gameData));
     }
-
+    public pauseAll() {
+        sfx.setVolume(0);
+        bgm.setVolume(0);
+    }
+    public resetAll() {
+        if (this.gameData.sound) {
+            sfx.setVolume(1);
+        } else {
+            sfx.setVolume(0);
+        }
+        if (this.gameData.music) {
+            bgm.setVolume(1);
+        } else {
+            bgm.setVolume(0);
+        }
+    }
     public toggleSound() {
         this.gameData.sound = !this.gameData.sound;
         if (this.gameData.sound) {

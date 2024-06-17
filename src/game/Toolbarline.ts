@@ -7,6 +7,7 @@ import { setup } from './Setup';
 import { emitter } from '../store/emitter';
 import { navigation } from '../navigation';
 import { IndicatorCover } from '../screen/IndicatorCover';
+import { gameRecord } from './GameRecord';
 
 interface ToolBarItem {
     name: string;
@@ -191,15 +192,21 @@ export class Toolbarline extends Container {
 
     private tryAd(rewardBack: () => void, errorBack: () => void) {
         try {
+            gameRecord.pauseAll();
             const callbacks = {
-                adFinished: rewardBack,
+                adFinished: () => {
+                    gameRecord.resetAll();
+                    rewardBack && rewardBack();
+                },
                 adError: (error: unknown) => {
+                    gameRecord.resetAll();
                     console.log('Error rewarded ad', error);
                     errorBack && errorBack();
                 },
             };
             window.CrazyGames.SDK.ad.requestAd('rewarded', callbacks);
         } catch (error) {
+            gameRecord.resetAll();
             console.log('Error rewarded ad', error);
             errorBack && errorBack();
         }

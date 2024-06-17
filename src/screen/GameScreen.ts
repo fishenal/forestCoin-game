@@ -44,13 +44,15 @@ class GameScreen extends Container {
         const { innerWidth } = setup.getConfigData();
         this.settingIcon.x = innerWidth + 40;
         this.settingIcon.y = innerWidth * 1.2;
-
+        await window.CrazyGames.SDK.game.gameplayStart();
         navigation.showOverlay(IndicatorCover, {
             showTool: false,
         });
     }
 
-    public async hide() {}
+    public async hide() {
+        await window.CrazyGames.SDK.game.gameplayStop();
+    }
     resize(w: number, h: number) {
         this.bg.resize(w, h);
         this.innerContainer.x = w * 0.5 - innerWidth * 0.5;
