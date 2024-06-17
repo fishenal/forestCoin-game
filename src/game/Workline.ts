@@ -12,7 +12,7 @@ import { emitter } from '../store/emitter';
 export class Workline extends Container {
     private limitNum!: number;
     private size!: number;
-    private headContainer!: Container<Head>;
+    public headContainer!: Container<Head>;
     private placeholderContainer!: Container<PlaceHolder>;
     private plate!: Graphics;
     public returnMode!: boolean;

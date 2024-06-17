@@ -33,12 +33,12 @@ class StartScreen extends Container {
         logo.anchor.y = 0.5;
         this.logoContainer.addChild(logo);
 
-        // const cLogo = Sprite.from('crazyGameLogo');
-        // cLogo.width = 165;
-        // cLogo.height = 60;
-        // cLogo.anchor.y = 0.5;
-        // cLogo.x = -170;
-        // this.logoContainer.addChild(cLogo);
+        const cLogo = Sprite.from('crazyGameLogo');
+        cLogo.width = 165;
+        cLogo.height = 60;
+        cLogo.anchor.y = 0.5;
+        cLogo.x = -170;
+        this.logoContainer.addChild(cLogo);
 
         this.innerContainer.addChild(this.logoContainer);
         this.addChild(this.innerContainer);

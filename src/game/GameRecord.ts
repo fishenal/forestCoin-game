@@ -13,6 +13,9 @@ interface GameData {
     };
 }
 
+// const dataPortal = window.localStorage;
+// const dataPortal = window.CrazyGames.SDK.data;
+
 const gameDataKey = 'forest_coin_game_data';
 export class GameRecord {
     public gameData: GameData;
@@ -22,8 +25,10 @@ export class GameRecord {
             music: true,
             levels: {},
         };
-        if (localStorage.getItem(gameDataKey) !== null) {
-            this.gameData = JSON.parse(localStorage.getItem(gameDataKey) as string);
+    }
+    public init() {
+        if (window.CrazyGames.SDK.data.getItem(gameDataKey) !== null) {
+            this.gameData = JSON.parse(window.CrazyGames.SDK.data.getItem(gameDataKey) as string);
         } else {
             this.initData();
         }
@@ -51,7 +56,7 @@ export class GameRecord {
                 lock: i !== 1,
             };
         }
-        localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+        window.CrazyGames.SDK.data.setItem(gameDataKey, JSON.stringify(this.gameData));
     }
     private handleWin(star: number) {
         if (star > this.gameData.levels[setup.currentLevel].star) {
@@ -59,7 +64,7 @@ export class GameRecord {
         }
         if (this.gameData.levels[setup.currentLevel + 1] && this.gameData.levels[setup.currentLevel + 1].lock) {
             this.gameData.levels[setup.currentLevel + 1].lock = false;
-            localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+            window.CrazyGames.SDK.data.setItem(gameDataKey, JSON.stringify(this.gameData));
         }
     }
 
@@ -68,7 +73,7 @@ export class GameRecord {
             star,
             lock: lockStatus,
         };
-        localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+        window.CrazyGames.SDK.data.setItem(gameDataKey, JSON.stringify(this.gameData));
     }
 
     public toggleSound() {
@@ -78,7 +83,7 @@ export class GameRecord {
         } else {
             sfx.setVolume(0);
         }
-        localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+        window.CrazyGames.SDK.data.setItem(gameDataKey, JSON.stringify(this.gameData));
     }
     public toggleMusic() {
         this.gameData.music = !this.gameData.music;
@@ -87,7 +92,7 @@ export class GameRecord {
         } else {
             bgm.setVolume(0);
         }
-        localStorage.setItem(gameDataKey, JSON.stringify(this.gameData));
+        window.CrazyGames.SDK.data.setItem(gameDataKey, JSON.stringify(this.gameData));
     }
 }
 

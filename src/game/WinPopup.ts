@@ -59,6 +59,7 @@ export class WinPopup extends CommonPopup {
         if (setup.currentLevel >= setup.levelCount) {
             this.buttonArr[1].isShow = false;
             this.isLastLevel = true;
+            window.CrazyGames.SDK.game.happytime();
         } else {
             this.isLastLevel = false;
             this.buttonArr[1].isShow = true;

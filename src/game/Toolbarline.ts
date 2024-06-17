@@ -19,10 +19,13 @@ export class Toolbarline extends Container {
     public toolArr!: ToolBarItem[];
     public used: boolean;
     private countTextArr!: Text[];
+    private toolContainer: Container;
     private disableCover!: Graphics;
     constructor() {
         super();
         this.used = false;
+        this.toolContainer = new Container();
+        this.addChild(this.toolContainer);
     }
     private init() {
         this.used = false;
@@ -66,49 +69,15 @@ export class Toolbarline extends Container {
         this.disableCover.alpha = 0.6;
         this.disableCover.x = 60 * 0.5;
         this.disableCover.y = 60 * 0.5;
-
-        emitter.on('workLineCheck', (len: number) => {
-            this.handleWorklineChange(len);
+        emitter.on('workLineCheck', () => {
+            this.renderTools();
         });
     }
-    handleWorklineChange(length: number) {
-        if (length > 0) {
-            this.setToolDisable('return_back', true);
-        } else {
-            this.setToolDisable('return_back', false);
-        }
-    }
 
-    private setToolDisable(toolName: string, status: boolean) {
-        let index: number | undefined;
-        this.toolArr.forEach((item, idx) => {
-            if (toolName === item.name) {
-                index = idx;
-            }
-        });
-        if (index) {
-            const tool: FancyButton = this.getChildAt(index);
-            if (status) {
-                tool.defaultView?.removeChild(this.disableCover);
-                tool.eventMode = 'static';
-            } else {
-                tool.defaultView?.addChild(this.disableCover);
-                tool.eventMode = 'none';
-            }
-        }
-    }
     public show() {
-        this.removeChildren();
+        // this.removeChildren();
         this.init();
-        this.toolArr.forEach((item, idx) => {
-            const container = this.renderToolItem(item);
-            container.y = idx * 70 + 60;
-            container.x = 10;
-            if (item.name === 'return_back') {
-                container?.defaultView?.addChild(this.disableCover);
-            }
-            this.addChild(container);
-        });
+        this.renderTools();
         this.renderQuestion();
     }
     private renderQuestion() {
@@ -146,7 +115,13 @@ export class Toolbarline extends Container {
         button.x = 10;
         this.addChild(button);
     }
-    private renderToolItem(item: ToolBarItem) {
+    private renderTools() {
+        this.toolContainer.removeChildren();
+        this.toolArr.forEach((item, idx) => {
+            this.renderToolItem(item, idx);
+        });
+    }
+    private renderToolItem(item: ToolBarItem, idx: number) {
         const container = new Container();
         container.x = 15;
         // container.cursor = 'pointer';
@@ -184,47 +159,108 @@ export class Toolbarline extends Container {
         text.anchor = 0.5;
         this.countTextArr.push(text);
         container.addChild(numBg);
-        container.addChild(text);
 
-        // container.addChild(disableCover);
+        if (item.count === 0) {
+            const adIcon = Sprite.from('Icon_Tube');
+            adIcon.width = 20;
+            adIcon.height = 20;
+            adIcon.x = 60 * 0.8;
+            adIcon.y = 60 * 0.8;
+            adIcon.anchor = 0.5;
+            container.addChild(adIcon);
+        } else {
+            container.addChild(text);
+        }
 
         const button = new FancyButton({
             defaultView: container,
             ...buttonAnimation,
         });
-
-        button.eventMode = item.name === 'return_back' ? 'none' : 'static';
+        button.y = idx * 70 + 60;
+        button.x = 10;
+        if (workLine.headContainer.children.length === 0 && item.name === 'return_back') {
+            button?.defaultView?.addChild(this.disableCover);
+            button.eventMode = 'none';
+        } else {
+            button?.defaultView?.removeChild(this.disableCover);
+            button.eventMode = 'static';
+        }
         button.onPress.connect(item.action);
-        return button;
+        this.toolContainer.addChild(button);
     }
+
+    private tryAd(rewardBack: () => void, errorBack: () => void) {
+        try {
+            const callbacks = {
+                adFinished: rewardBack,
+                adError: (error: unknown) => {
+                    console.log('Error rewarded ad', error);
+                    errorBack && errorBack();
+                },
+            };
+            window.CrazyGames.SDK.ad.requestAd('rewarded', callbacks);
+        } catch (error) {
+            console.log('Error rewarded ad', error);
+            errorBack && errorBack();
+        }
+    }
+
     private onMagicClick() {
         this.used = true;
         const magicTool = this.toolArr.find((item) => item.name === 'magic_click');
+        if (magicTool) {
+            if (magicTool.count === 0) {
+                this.tryAd(
+                    () => {
+                        gameBoard.clearBlocks();
+                    },
+                    () => {},
+                );
+            } else if (magicTool.count > 0) {
+                magicTool.count -= 1;
+                this.renderTools();
 
-        if (magicTool && magicTool.count > 0) {
-            magicTool.count -= 1;
-            this.countTextArr[0].text = magicTool.count;
-            gameBoard.clearBlocks();
+                gameBoard.clearBlocks();
+            }
         }
     }
+
     private onReturnBack() {
         this.used = true;
         const returnTool = this.toolArr.find((item) => item.name === 'return_back');
 
-        if (returnTool && returnTool.count > 0) {
-            returnTool.count -= 1;
-            this.countTextArr[1].text = returnTool.count;
-            workLine.setReturnMode(true);
+        if (returnTool) {
+            if (returnTool.count === 0) {
+                this.tryAd(
+                    () => {
+                        workLine.setReturnMode(true);
+                    },
+                    () => {},
+                );
+            } else if (returnTool.count > 0) {
+                returnTool.count -= 1;
+                this.renderTools();
+                workLine.setReturnMode(true);
+            }
         }
     }
     private onShuffle() {
         this.used = true;
         const shuffleTool = this.toolArr.find((item) => item.name === 'shuffle');
 
-        if (shuffleTool && shuffleTool.count > 0) {
-            shuffleTool.count -= 1;
-            this.countTextArr[2].text = shuffleTool.count;
-            gameBoard.shuffle();
+        if (shuffleTool) {
+            if (shuffleTool.count === 0) {
+                this.tryAd(
+                    () => {
+                        gameBoard.shuffle();
+                    },
+                    () => {},
+                );
+            } else if (shuffleTool.count > 0) {
+                shuffleTool.count -= 1;
+                this.renderTools();
+                gameBoard.shuffle();
+            }
         }
     }
 }
