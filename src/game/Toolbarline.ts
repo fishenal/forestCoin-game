@@ -5,6 +5,8 @@ import { buttonAnimation } from '../utils/buttonAnimation';
 import { workLine } from './Workline';
 import { setup } from './Setup';
 import { emitter } from '../store/emitter';
+import { navigation } from '../navigation';
+import { IndicatorCover } from '../screen/IndicatorCover';
 
 interface ToolBarItem {
     name: string;
@@ -107,6 +109,42 @@ export class Toolbarline extends Container {
             }
             this.addChild(container);
         });
+        this.renderQuestion();
+    }
+    private renderQuestion() {
+        const container = new Container();
+        container.x = 15;
+        // container.cursor = 'pointer';
+        const bg = new Graphics();
+        bg.circle(0, 0, 30);
+        bg.fill(0xd9d9d9);
+        bg.alpha = 0.6;
+        bg.x = 60 * 0.5;
+        bg.y = 60 * 0.5;
+        container.addChild(bg);
+
+        const spr = Sprite.from('Icon_Question');
+        spr.anchor = 0.5;
+        spr.width = 60 * 0.6;
+        spr.height = 60 * 0.6;
+        spr.x = 60 * 0.5;
+        spr.y = 60 * 0.5;
+        container.addChild(spr);
+
+        const button = new FancyButton({
+            defaultView: container,
+            ...buttonAnimation,
+        });
+
+        button.eventMode = 'static';
+        button.onPress.connect(() => {
+            navigation.showOverlay(IndicatorCover, {
+                showTool: true,
+            });
+        });
+        button.y = 3 * 70 + 60;
+        button.x = 10;
+        this.addChild(button);
     }
     private renderToolItem(item: ToolBarItem) {
         const container = new Container();

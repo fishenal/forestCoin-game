@@ -12,6 +12,7 @@ export class IndicatorCover extends Container {
     private step2: Container;
     private step3: Container;
     private currentStep: number = 1;
+    private showTool: boolean = false;
     constructor() {
         super();
         this.cover = new Graphics().rect(0, 0, window.innerWidth, window.innerHeight).fill(0x000000);
@@ -32,6 +33,10 @@ export class IndicatorCover extends Container {
         this.eventMode = 'static';
         this.cursor = 'pointer';
         this.on('pointerdown', () => {
+            if (this.showTool) {
+                this.hide();
+                return;
+            }
             if (this.currentStep < 3) {
                 this.currentStep += 1;
                 this.step1.visible = false;
@@ -48,7 +53,9 @@ export class IndicatorCover extends Container {
             }
         });
     }
-
+    public prepare(data: { showTool: boolean }) {
+        this.showTool = data.showTool;
+    }
     renderStep1() {
         const rect1 = new Graphics().roundRect(-3, 350, innerWidth, 280).stroke({
             width: 6,
@@ -184,6 +191,10 @@ export class IndicatorCover extends Container {
         this.step3.visible = true;
     }
     public async show() {
+        if (this.showTool) {
+            this.showToolPop();
+            return;
+        }
         const learned = window.localStorage.getItem(learnedLskey);
         if (!learned) {
             this.visible = true;

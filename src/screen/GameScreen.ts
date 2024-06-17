@@ -45,7 +45,9 @@ class GameScreen extends Container {
         this.settingIcon.x = innerWidth + 40;
         this.settingIcon.y = innerWidth * 1.2;
 
-        navigation.showOverlay(IndicatorCover);
+        navigation.showOverlay(IndicatorCover, {
+            showTool: false,
+        });
     }
 
     public async hide() {}

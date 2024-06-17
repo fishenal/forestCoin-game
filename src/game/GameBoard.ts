@@ -243,7 +243,7 @@ export class GameBoard extends Container {
                         const newY = head.y + this.coinWidth + this.gap;
                         gsap.to(head, {
                             y: newY,
-                            duration: 0.4,
+                            duration: 0.3,
                             ease: 'bounce.out',
                             onComplete: () => {
                                 head.yy += 1;
@@ -256,7 +256,7 @@ export class GameBoard extends Container {
         // wait all animation finished
         setTimeout(() => {
             this.lock = false;
-        }, 150);
+        }, 200);
     }
 }
 export const gameBoard = new GameBoard();
