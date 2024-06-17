@@ -61,16 +61,15 @@ export class IndicatorCover extends Container {
             width: 6,
             color: 0x56c0ff,
         });
-        rect1.x = window.innerWidth * 0.5 - innerWidth * 0.5;
+        rect1.x = 0;
 
         const indicator = Sprite.from('indicator');
         indicator.width = 100;
         indicator.height = 100;
-        indicator.x = window.innerWidth * 0.5 - innerWidth * 0.5;
+        indicator.x = 100;
         indicator.y = 350;
         const info = new Text({
-            text: `Click Coins on Board, 
-            Move them to bottom Package`,
+            text: `Click Coins on Board, \nMove them to bottom Package`,
             style: {
                 fill: 0x56c0ff,
                 fontFamily: 'CherrySwashB',
@@ -81,13 +80,13 @@ export class IndicatorCover extends Container {
                 },
             },
         });
-        info.x = 300;
+        info.x = 120;
         info.y = 450;
 
         const arrow = Sprite.from('Icon_ArrowDown');
         arrow.width = 60;
         arrow.height = 60;
-        arrow.x = window.innerWidth * 0.5 - innerWidth * 0.5 + 250;
+        arrow.x = 120;
         arrow.y = 550;
 
         this.step1.addChild(indicator);
@@ -103,7 +102,7 @@ export class IndicatorCover extends Container {
             width: 6,
             color: 0x56c0ff,
         });
-        rect1.x = window.innerWidth * 0.5 - innerWidth * 0.5;
+        rect1.x = 0;
 
         const info = new Text({
             text: `3 same Coin will be elimated, Never exceed 7!`,
@@ -117,7 +116,7 @@ export class IndicatorCover extends Container {
                 },
             },
         });
-        info.x = 300;
+        info.x = 0;
         info.y = 760;
 
         this.step2.addChild(info);
@@ -128,7 +127,7 @@ export class IndicatorCover extends Container {
     renderStep3() {
         const container = new Container();
         container.y = 60;
-        container.x = window.innerWidth * 0.5 - innerWidth * 0.5;
+        container.x = 0;
 
         const rect1 = new Graphics().roundRect(0, 60, innerWidth, 600).fill(0xfdf7f0).stroke({
             width: 6,
@@ -204,5 +203,10 @@ export class IndicatorCover extends Container {
     public async hide() {
         window.localStorage.setItem(learnedLskey, 'learned');
         this.visible = false;
+    }
+    resize(w: number, h: number) {
+        this.cover.width = w;
+        this.cover.height = h;
+        this.x = w * 0.5 - innerWidth * 0.5;
     }
 }
